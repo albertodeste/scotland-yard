@@ -31,7 +31,35 @@ public class MatchHandler extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().println(match.get().toJSON());
         } else {
-            response.setContentType("application/json");
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        }
+    }
+
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
+
+        String[] pathVariables = request.getRequestURI().replaceAll("^.*/match/", "").split("/");
+        String matchId = pathVariables[0];
+        String action = pathVariables[1];
+
+        if ("start".equals(action)) {
+            startMatch(matchId, response);
+        } else {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+    private void startMatch(String matchId, HttpServletResponse response) {
+
+        Optional<Match> matchOpt = MatchService.getInstance().getMatch(matchId);
+
+        if (matchOpt.isPresent()) {
+
+           if (MatchService.getInstance().startMatch(matchOpt.get())) {
+                response.setStatus(HttpServletResponse.SC_OK);
+           } else {
+               response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+           }
+        } else {
             response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }

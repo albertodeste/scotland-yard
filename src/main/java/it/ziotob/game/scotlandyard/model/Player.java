@@ -25,6 +25,7 @@ public class Player {
     private String name;
     private String role;
     private LocalDateTime createdAt;
+    private Long position;
 
     public static Optional<Player> buildFromEvents(Stream<Event> eventStream) {
 
@@ -59,5 +60,9 @@ public class Player {
         } else {
             throw new RuntimeException("Trying to apply event of type " + event.getType() + " on Player object");
         }
+    }
+
+    public boolean isMisterX() {
+        return "mister_x".equals(role);
     }
 }

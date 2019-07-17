@@ -8,8 +8,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
@@ -39,6 +42,10 @@ public class PlayerService {
     }
 
     public Optional<Player> getPlayer(String playerId) {
-        return playerRepository.getPlayer(playerId);
+        return getPlayers(singletonList(playerId)).findFirst();
+    }
+
+    public Stream<Player> getPlayers(List<String> playerIds) {
+        return playerRepository.getPlayers(playerIds);
     }
 }

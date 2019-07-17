@@ -22,11 +22,13 @@ public class Match {
     public static final String GROUP = "match";
     public static final String EVENT_CREATE = "create";
     public static final String EVENT_ADDED_PLAYER = "added_player";
+    public static final String EVENT_START = "start";
 
     private static final Long EXPIRATION_TIMEOUT = 60L;
 
     private String id;
     private LocalDateTime startedTime;
+    private Boolean started = false;
     private List<String> relatedPlayerIds = new LinkedList<>();
 
     public static Optional<Match> buildFromEvents(Stream<Event> eventStream) {
@@ -41,9 +43,10 @@ public class Match {
 
     public String toJSON() {
 
-        return String.format("{\"started_time\":\"%s\", \"related_players\":[%s]}",
+        return String.format("{\"started_time\":\"%s\", \"related_players\":[%s], \"is_started\": %s}",
                 DATE_TIME_JSON_FORMATTER.format(startedTime),
-                listToString(relatedPlayerIds, id -> id));
+                listToString(relatedPlayerIds, id -> id),
+                started.toString());
     }
 
     private <E> String listToString(List<E> list, Function<E, String> fn) {
@@ -58,6 +61,8 @@ public class Match {
             startedTime = event.getDateTime();
         } else if (EVENT_ADDED_PLAYER.equals(event.getType())) {
             relatedPlayerIds.add(event.getValue());
+        } else if (EVENT_START.equals(event.getType())) {
+            started = true;
         } else {
             throw new RuntimeException("Trying to apply event of type " + event.getType() + " on Match object");
         }

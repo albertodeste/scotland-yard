@@ -6,8 +6,13 @@ import it.ziotob.game.scotlandyard.model.Match;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.Collections.singletonList;
 
 @RequiredArgsConstructor
 public class MatchRepository {
@@ -23,13 +28,21 @@ public class MatchRepository {
         return uid;
     }
 
-    public Optional<Match> getMatch(String id) {
+    public Stream<Match> getMatches(List<String> matchIds) {
 
-        return Match.buildFromEvents(database.getEvents(Match.GROUP)
-                .filter(event -> id.equals(event.getId())));
+        return database.getEvents(Match.GROUP)
+                .collect(Collectors.groupingBy(Event::getId))
+                .entrySet().stream()
+                .map(matchEvents -> Match.buildFromEvents(matchEvents.getValue().stream()))
+                .filter(Optional::isPresent)
+                .map(Optional::get);
     }
 
     public void addPlayer(Match match, String playerId, LocalDateTime dateTime) {
         database.putEvent(new Event(match.getId(), Match.EVENT_ADDED_PLAYER, playerId, dateTime), Match.GROUP);
+    }
+
+    public void startMatch(Match match, LocalDateTime dateTime) {
+        database.putEvent(new Event(match.getId(), Match.EVENT_START, null, dateTime), Match.GROUP);
     }
 }

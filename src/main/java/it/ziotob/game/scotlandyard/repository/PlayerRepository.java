@@ -6,8 +6,11 @@ import it.ziotob.game.scotlandyard.model.Player;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public class PlayerRepository {
@@ -25,9 +28,13 @@ public class PlayerRepository {
         return id;
     }
 
-    public Optional<Player> getPlayer(String id) {
+    public Stream<Player> getPlayers(List<String> playerIds) {
 
-        return Player.buildFromEvents(database.getEvents(Player.GROUP)
-                .filter(event -> id.equals(event.getId())));
+        return database.getEvents(Player.GROUP)
+                .collect(Collectors.groupingBy(Event::getId))
+                .entrySet().stream()
+                .map(playerEvents -> Player.buildFromEvents(playerEvents.getValue().stream()))
+                .filter(Optional::isPresent)
+                .map(Optional::get);
     }
 }
