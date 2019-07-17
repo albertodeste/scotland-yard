@@ -21,10 +21,10 @@ public class PlayerHandler extends HttpServlet {
 
         String matchId = request.getRequestURI().replaceAll("^.*/player/", "").replaceAll("/.*$", "");
         String name = (String) requestBody.get("name");
-        Boolean isMisterX = (Boolean) requestBody.get("is_mister_x");
+        String role = (String) requestBody.get("role");
 
         Optional<Match> matchOpt = MatchService.getInstance().getMatch(matchId);
-        Optional<String> playerIdOpt = matchOpt.map(match -> PlayerService.getInstance().createPlayer(match, name, isMisterX));
+        Optional<String> playerIdOpt = matchOpt.map(match -> PlayerService.getInstance().createPlayer(match, name, role));
 
         if (playerIdOpt.isPresent()) {
 

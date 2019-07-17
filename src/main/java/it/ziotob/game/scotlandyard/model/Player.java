@@ -19,11 +19,11 @@ public class Player {
     public static final String GROUP = "player";
     public static final String EVENT_CREATE = "create";
     public static final String EVENT_SET_NAME = "set_name";
-    public static final String EVENT_SET_MISTER_X = "set_mister_x";
+    public static final String EVENT_SET_ROLE = "set_role";
 
     private String id;
     private String name;
-    private Boolean misterX;
+    private String role;
     private LocalDateTime createdAt;
 
     public static Optional<Player> buildFromEvents(Stream<Event> eventStream) {
@@ -38,10 +38,10 @@ public class Player {
 
     public String toJSON() {
 
-        return String.format("{\"id\": \"%s\", \"name\": \"%s\", \"is_mister_x\": %s, \"created_at\": \"%s\"}",
+        return String.format("{\"id\": \"%s\", \"name\": \"%s\", \"role\": %s, \"created_at\": \"%s\"}",
                 id,
                 name,
-                misterX.toString(),
+                role,
                 DATE_TIME_JSON_FORMATTER.format(createdAt)
         );
     }
@@ -54,8 +54,8 @@ public class Player {
             createdAt = event.getDateTime();
         } else if (EVENT_SET_NAME.equals(event.getType())) {
             name = event.getValue();
-        } else if (EVENT_SET_MISTER_X.equals(event.getType())) {
-            misterX = Boolean.parseBoolean(event.getValue());
+        } else if (EVENT_SET_ROLE.equals(event.getType())) {
+            role = event.getValue();
         } else {
             throw new RuntimeException("Trying to apply event of type " + event.getType() + " on Player object");
         }

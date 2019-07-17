@@ -54,6 +54,6 @@ public class Main {
 
     private static void injectPlayer() {
         MatchService.getInstance().getMatch("0")
-                .ifPresent(match -> PlayerService.getInstance().createPlayer(match, "ziotob", false));
+                .ifPresent(match -> PlayerService.getInstance().createPlayer(match, "ziotob", "detective"));
     }
 }

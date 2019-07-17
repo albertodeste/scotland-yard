@@ -28,10 +28,10 @@ public class PlayerService {
         return instance;
     }
 
-    public String createPlayer(Match match, String name, Boolean isMisterX) {
+    public String createPlayer(Match match, String name, String role) {
 
         LocalDateTime dateTime = LocalDateTime.now();
-        String playerId = playerRepository.createPlayer(dateTime, name, isMisterX);
+        String playerId = playerRepository.createPlayer(dateTime, name, role);
 
         MatchService.getInstance().addPlayer(match, playerId, dateTime);
 
