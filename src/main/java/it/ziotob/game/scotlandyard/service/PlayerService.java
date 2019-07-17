@@ -2,11 +2,13 @@ package it.ziotob.game.scotlandyard.service;
 
 import it.ziotob.game.scotlandyard.database.Database;
 import it.ziotob.game.scotlandyard.model.Match;
+import it.ziotob.game.scotlandyard.model.Player;
 import it.ziotob.game.scotlandyard.repository.PlayerRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static java.util.Objects.isNull;
 
@@ -26,13 +28,17 @@ public class PlayerService {
         return instance;
     }
 
-    public String createPlayer(Match match) {
+    public String createPlayer(Match match, String name, Boolean isMisterX) {
 
         LocalDateTime dateTime = LocalDateTime.now();
-        String playerId = playerRepository.createPlayer(dateTime);
+        String playerId = playerRepository.createPlayer(dateTime, name, isMisterX);
 
         MatchService.getInstance().addPlayer(match, playerId, dateTime);
 
         return playerId;
+    }
+
+    public Optional<Player> getPlayer(String playerId) {
+        return playerRepository.getPlayer(playerId);
     }
 }

@@ -6,6 +6,8 @@ import it.ziotob.game.scotlandyard.handler.MatchHandler;
 import it.ziotob.game.scotlandyard.handler.PlayerHandler;
 import it.ziotob.game.scotlandyard.handler.StatusHandler;
 import it.ziotob.game.scotlandyard.model.Match;
+import it.ziotob.game.scotlandyard.service.MatchService;
+import it.ziotob.game.scotlandyard.service.PlayerService;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;
@@ -43,9 +45,15 @@ public class Main {
         //TODO start match expiration cleaner thread
 
         injectMatch();
+        injectPlayer();
     }
 
     private static void injectMatch() {
         Database.getInstance().putEvent(new Event("0", Match.EVENT_CREATE, null, LocalDateTime.now()), Match.GROUP);
+    }
+
+    private static void injectPlayer() {
+        MatchService.getInstance().getMatch("0")
+                .ifPresent(match -> PlayerService.getInstance().createPlayer(match, "ziotob", false));
     }
 }
