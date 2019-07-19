@@ -32,6 +32,7 @@ public class Main {
         handler.addServletWithMapping(StatusHandler.class, "/status");
         handler.addServletWithMapping(MatchHandler.class, "/match/*");
         handler.addServletWithMapping(PlayerHandler.class, "/player/*");
+        //TODO add positions endpoint to register mister_x and players random positions
 
         server.setHandler(handler);
 
@@ -45,15 +46,19 @@ public class Main {
         //TODO start match expiration cleaner thread
 
         injectMatch();
-        injectPlayer();
+        injectPlayers();
     }
 
     private static void injectMatch() {
         Database.getInstance().putEvent(new Event("0", Match.EVENT_CREATE, null, LocalDateTime.now()), Match.GROUP);
     }
 
-    private static void injectPlayer() {
+    private static void injectPlayers() {
+
         MatchService.getInstance().getMatch("0")
-                .ifPresent(match -> PlayerService.getInstance().createPlayer(match, "ziotob", "detective"));
+                .ifPresent(match -> {
+                    PlayerService.getInstance().createPlayer(match, "ziotob", "detective");
+                    PlayerService.getInstance().createPlayer(match, "francesco", "mister_x");
+                });
     }
 }

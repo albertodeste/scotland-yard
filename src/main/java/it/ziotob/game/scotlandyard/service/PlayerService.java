@@ -48,4 +48,12 @@ public class PlayerService {
     public Stream<Player> getPlayers(List<String> playerIds) {
         return playerRepository.getPlayers(playerIds);
     }
+
+    public boolean placePlayer(Player player, Long position) {
+
+        //TODO check match is in correct phase (set_players_position, move_players, move_mister_x)
+        //TODO check that player position can be set (correct phase and not placement happened or position has been picked up from random positions and not already been assigned)
+        //TODO check validity of movement through map
+        return playerRepository.placePlayer(player, position, LocalDateTime.now());
+    }
 }

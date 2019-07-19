@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static it.ziotob.game.scotlandyard.utils.FormatUtils.DATE_TIME_JSON_FORMATTER;
+import static it.ziotob.game.scotlandyard.utils.FormatUtils.formatString;
 import static java.util.Objects.nonNull;
 
 @NoArgsConstructor
@@ -20,6 +21,7 @@ public class Player {
     public static final String EVENT_CREATE = "create";
     public static final String EVENT_SET_NAME = "set_name";
     public static final String EVENT_SET_ROLE = "set_role";
+    public static final String EVENT_SET_POSITION = "set_position";
 
     private String id;
     private String name;
@@ -39,11 +41,12 @@ public class Player {
 
     public String toJSON() {
 
-        return String.format("{\"id\": \"%s\", \"name\": \"%s\", \"role\": %s, \"created_at\": \"%s\"}",
+        return String.format("{\"id\": \"%s\", \"name\": \"%s\", \"role\": \"%s\", \"created_at\": \"%s\", \"position\": %s}",
                 id,
                 name,
                 role,
-                DATE_TIME_JSON_FORMATTER.format(createdAt)
+                DATE_TIME_JSON_FORMATTER.format(createdAt),
+                formatString(position)
         );
     }
 
@@ -57,6 +60,8 @@ public class Player {
             name = event.getValue();
         } else if (EVENT_SET_ROLE.equals(event.getType())) {
             role = event.getValue();
+        } else if(EVENT_SET_POSITION.equals(event.getType())) {
+            position = Long.parseLong(event.getValue());
         } else {
             throw new RuntimeException("Trying to apply event of type " + event.getType() + " on Player object");
         }

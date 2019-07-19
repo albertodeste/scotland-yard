@@ -47,23 +47,15 @@ public class MatchService {
 
     public boolean startMatch(Match match) {
 
-        if (canStart(match)) {
+        List<Player> players = PlayerService.getInstance().getPlayers(match.getRelatedPlayerIds()).collect(Collectors.toList());
+        MatchStatus matchStatus = new MatchStatus(match, players);
+
+        if (matchStatus.canStart()) {
 
             matchRepository.startMatch(match, LocalDateTime.now());
             return true;
         } else {
             return false;
         }
-    }
-
-    private boolean canStart(Match match) {
-
-        List<Player> matchPlayers = PlayerService.getInstance().getPlayers(match.getRelatedPlayerIds()).collect(Collectors.toList());
-
-        boolean misterXExists = matchPlayers.stream().anyMatch(Player::isMisterX);
-        boolean minimumPlayersReached = matchPlayers.size() > 1;
-        boolean maximumPlayersReached = matchPlayers.size() > 4;
-
-        return misterXExists && minimumPlayersReached && !maximumPlayersReached;
     }
 }

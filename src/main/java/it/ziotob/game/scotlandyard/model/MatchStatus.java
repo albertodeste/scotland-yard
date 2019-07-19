@@ -15,10 +15,22 @@ public class MatchStatus {
         if (isAddPlayers()) {
             return "add_players";
         } else if (isPlacePlayers()) {
-            return "place_players";
+            return "set_players_position";
+        } else if (isMoveMisterX()) {
+            return "move_mister_x";
+        } else if (isMovePlayers()) {
+            return "move_players";
         } else {
             return "unknown";
         }
+    }
+
+    private boolean isMovePlayers() {
+        return true; //TODO implement
+    }
+
+    private boolean isMoveMisterX() {
+        return true; //TODO implement
     }
 
     private boolean isPlacePlayers() {
@@ -32,8 +44,20 @@ public class MatchStatus {
     public String toJSON() {
 
         return String.format(
-                "{\"status\": \"%s\"}",
-                getStatusMessage()
+                "{\"status\": \"%s\", \"can_start\": %s}",
+                getStatusMessage(),
+                canStart().toString()
         );
+    }
+
+    public Boolean canStart() {
+
+        boolean misterXExists = players.stream().anyMatch(Player::isMisterX);
+        boolean minimumPlayersReached = players.size() > 1;
+        boolean maximumPlayersReached = players.size() > 4;
+
+        //TODO check that random positions has been calculated for this match
+
+        return isAddPlayers() && misterXExists && minimumPlayersReached && !maximumPlayersReached;
     }
 }

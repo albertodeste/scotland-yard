@@ -38,4 +38,10 @@ public class PlayerRepository {
                 .filter(Optional::isPresent)
                 .map(Optional::get);
     }
+
+    public boolean placePlayer(Player player, Long position, LocalDateTime dateTime) {
+
+        database.putEvent(new Event(player.getId(), Player.EVENT_SET_POSITION, position.toString(), dateTime), Player.GROUP);
+        return true;
+    }
 }

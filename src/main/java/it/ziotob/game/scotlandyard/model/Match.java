@@ -45,7 +45,7 @@ public class Match {
 
         return String.format("{\"started_time\":\"%s\", \"related_players\":[%s], \"is_started\": %s}",
                 DATE_TIME_JSON_FORMATTER.format(startedTime),
-                listToString(relatedPlayerIds, id -> id),
+                listToString(relatedPlayerIds, id -> "\"" + id + "\""),
                 started.toString());
     }
 
