@@ -12,8 +12,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Collections.singletonList;
-
 @RequiredArgsConstructor
 public class MatchRepository {
 
@@ -33,6 +31,7 @@ public class MatchRepository {
         return database.getEvents(Match.GROUP)
                 .collect(Collectors.groupingBy(Event::getId))
                 .entrySet().stream()
+                .filter(entry -> matchIds.contains(entry.getKey()))
                 .map(matchEvents -> Match.buildFromEvents(matchEvents.getValue().stream()))
                 .filter(Optional::isPresent)
                 .map(Optional::get);

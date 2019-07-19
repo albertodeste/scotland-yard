@@ -2,6 +2,7 @@ package it.ziotob.game.scotlandyard.service;
 
 import it.ziotob.game.scotlandyard.database.Database;
 import it.ziotob.game.scotlandyard.model.Match;
+import it.ziotob.game.scotlandyard.model.MatchStatus;
 import it.ziotob.game.scotlandyard.model.Player;
 import it.ziotob.game.scotlandyard.repository.MatchRepository;
 import lombok.AccessLevel;
@@ -40,6 +41,7 @@ public class MatchService {
     }
 
     public void addPlayer(Match match, String playerId, LocalDateTime dateTime) {
+        //TODO return error if match already started
         matchRepository.addPlayer(match, playerId, dateTime);
     }
 

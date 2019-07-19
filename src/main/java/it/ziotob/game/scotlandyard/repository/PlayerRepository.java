@@ -33,6 +33,7 @@ public class PlayerRepository {
         return database.getEvents(Player.GROUP)
                 .collect(Collectors.groupingBy(Event::getId))
                 .entrySet().stream()
+                .filter(entry -> playerIds.contains(entry.getKey()))
                 .map(playerEvents -> Player.buildFromEvents(playerEvents.getValue().stream()))
                 .filter(Optional::isPresent)
                 .map(Optional::get);

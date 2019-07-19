@@ -65,4 +65,8 @@ public class Player {
     public boolean isMisterX() {
         return "mister_x".equals(role);
     }
+
+    public boolean isPlaced() {
+         return nonNull(position);
+    }
 }
