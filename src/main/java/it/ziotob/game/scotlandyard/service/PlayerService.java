@@ -2,6 +2,7 @@ package it.ziotob.game.scotlandyard.service;
 
 import it.ziotob.game.scotlandyard.database.Database;
 import it.ziotob.game.scotlandyard.model.Match;
+import it.ziotob.game.scotlandyard.model.MatchStatus;
 import it.ziotob.game.scotlandyard.model.Player;
 import it.ziotob.game.scotlandyard.repository.PlayerRepository;
 import lombok.AccessLevel;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
@@ -34,7 +36,7 @@ public class PlayerService {
     public String createPlayer(Match match, String name, String role) {
 
         LocalDateTime dateTime = LocalDateTime.now();
-        String playerId = playerRepository.createPlayer(dateTime, name, role);
+        String playerId = playerRepository.createPlayer(dateTime, name, role, match.getId());
 
         MatchService.getInstance().addPlayer(match, playerId, dateTime);
 
@@ -51,9 +53,24 @@ public class PlayerService {
 
     public boolean placePlayer(Player player, Long position) {
 
-        //TODO check match is in correct phase (set_players_position, move_players, move_mister_x)
-        //TODO check that player position can be set (correct phase and not placement happened or position has been picked up from random positions and not already been assigned)
-        //TODO check validity of movement through map
-        return playerRepository.placePlayer(player, position, LocalDateTime.now());
+        Match match = MatchService.getInstance().getMatch(player.getMatchId()).orElseThrow(() -> new RuntimeException("Player with id " + player.getId() + " associated to not existing match " + player.getMatchId() + " while placing player"));
+        List<Player> players = PlayerService.getInstance().getPlayers(match.getRelatedPlayerIds()).collect(Collectors.toList());
+        MatchStatus matchStatus = new MatchStatus(match, players);
+
+        boolean isValidPosition = match.getPositions().stream().filter(p -> p.getMisterX() == player.isMisterX()).filter(p -> !p.getUsed()).anyMatch(p -> position.equals(p.getNumber()));
+
+        if (matchStatus.canPlacePlayers() && !player.isPlaced() && isValidPosition) {
+            return playerRepository.placePlayer(player, position, LocalDateTime.now());
+        } else {
+            return false;
+        }
+    }
+
+    public boolean movePlayer(Player player, Long startingPosition, Long endingPosition) {
+
+        //TODO validate game in correct phase (move_players, move_mister_x)
+        //TODO validate move is correct through map
+        //TODO validate no other detectives in this position
+        return true;
     }
 }

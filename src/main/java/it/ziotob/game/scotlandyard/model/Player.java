@@ -22,12 +22,14 @@ public class Player {
     public static final String EVENT_SET_NAME = "set_name";
     public static final String EVENT_SET_ROLE = "set_role";
     public static final String EVENT_SET_POSITION = "set_position";
+    public static final String EVENT_SET_MATCH_ID = "set_match_id";
 
     private String id;
     private String name;
     private String role;
     private LocalDateTime createdAt;
     private Long position;
+    private String matchId;
 
     public static Optional<Player> buildFromEvents(Stream<Event> eventStream) {
 
@@ -60,8 +62,10 @@ public class Player {
             name = event.getValue();
         } else if (EVENT_SET_ROLE.equals(event.getType())) {
             role = event.getValue();
-        } else if(EVENT_SET_POSITION.equals(event.getType())) {
-            position = Long.parseLong(event.getValue());
+        } else if (EVENT_SET_POSITION.equals(event.getType())) {
+            position = Long.parseLong(event.getValue()); //TODO check validity of position, load game ad X moment and check if position is available
+        } else if (EVENT_SET_MATCH_ID.equals(event.getType())) {
+            matchId = event.getValue();
         } else {
             throw new RuntimeException("Trying to apply event of type " + event.getType() + " on Player object");
         }
@@ -72,6 +76,6 @@ public class Player {
     }
 
     public boolean isPlaced() {
-         return nonNull(position);
+        return nonNull(position);
     }
 }

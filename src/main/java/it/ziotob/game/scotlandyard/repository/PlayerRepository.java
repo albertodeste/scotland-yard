@@ -17,13 +17,14 @@ public class PlayerRepository {
 
     private final Database database;
 
-    public String createPlayer(LocalDateTime dateTime, String name, String role) {
+    public String createPlayer(LocalDateTime dateTime, String name, String role, String matchId) {
 
         String id = UUID.randomUUID().toString();
 
         database.putEvent(new Event(id, Player.EVENT_CREATE, null, dateTime), Player.GROUP);
         database.putEvent(new Event(id, Player.EVENT_SET_NAME, name, dateTime), Player.GROUP);
         database.putEvent(new Event(id, Player.EVENT_SET_ROLE, role, dateTime), Player.GROUP);
+        database.putEvent(new Event(id, Player.EVENT_SET_MATCH_ID, matchId, dateTime), Player.GROUP);
 
         return id;
     }

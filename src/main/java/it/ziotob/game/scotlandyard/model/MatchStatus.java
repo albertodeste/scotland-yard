@@ -56,8 +56,14 @@ public class MatchStatus {
         boolean minimumPlayersReached = players.size() > 1;
         boolean maximumPlayersReached = players.size() > 4;
 
-        //TODO check that random positions has been calculated for this match
-
         return isAddPlayers() && misterXExists && minimumPlayersReached && !maximumPlayersReached;
+    }
+
+    public boolean canPlacePlayers() {
+
+        boolean matchHasPositions = !match.getPositions().isEmpty();
+        boolean matchHasFreePositions = match.getPositions().stream().filter(p -> !p.getMisterX()).anyMatch(p -> !p.getUsed());
+
+        return matchHasPositions && matchHasFreePositions && isPlacePlayers();
     }
 }
