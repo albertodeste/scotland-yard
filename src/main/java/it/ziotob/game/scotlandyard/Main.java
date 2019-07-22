@@ -32,7 +32,6 @@ public class Main {
         handler.addServletWithMapping(StatusHandler.class, "/status");
         handler.addServletWithMapping(MatchHandler.class, "/match/*");
         handler.addServletWithMapping(PlayerHandler.class, "/player/*");
-        //TODO add positions endpoint to register mister_x and players random positions
 
         server.setHandler(handler);
 

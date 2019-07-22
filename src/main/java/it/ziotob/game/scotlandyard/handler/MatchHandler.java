@@ -3,6 +3,7 @@ package it.ziotob.game.scotlandyard.handler;
 import it.ziotob.game.scotlandyard.model.Match;
 import it.ziotob.game.scotlandyard.model.MatchStatus;
 import it.ziotob.game.scotlandyard.model.Player;
+import it.ziotob.game.scotlandyard.model.Position;
 import it.ziotob.game.scotlandyard.service.MatchService;
 import it.ziotob.game.scotlandyard.service.PlayerService;
 
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static it.ziotob.game.scotlandyard.utils.FormatUtils.formatList;
 import static it.ziotob.game.scotlandyard.utils.ServletUtils.getPathVariables;
 
 public class MatchHandler extends HttpServlet {
@@ -45,9 +47,20 @@ public class MatchHandler extends HttpServlet {
 
         if ("status".equals(action)) {
             getMatchStatus(match.get(), response);
+        } else if ("positions".equals(action)) {
+            getMatchPositions(match.get(), response);
         } else {
             getMatchInfo(match.get(), response);
         }
+    }
+
+    private void getMatchPositions(Match match, HttpServletResponse response) throws IOException {
+
+        List<Position> positions = match.getPositions().stream().filter(p -> !p.getMisterX()).collect(Collectors.toList());
+
+        response.setStatus(HttpServletResponse.SC_OK);
+        response.setContentType("application/json");
+        response.getWriter().println(formatList(positions, Position::toJSON));
     }
 
     private void getMatchStatus(Match match, HttpServletResponse response) throws IOException {
@@ -68,32 +81,32 @@ public class MatchHandler extends HttpServlet {
         response.getWriter().println(match.toJSON());
     }
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         List<String> pathVariables = getPathVariables(request, BASE_URL);
         String matchId = pathVariables.stream().findFirst().orElseThrow(() -> new RuntimeException("Match PUT called without matchId"));
         String action = pathVariables.stream().skip(1L).findFirst().orElse("");
 
+        Optional<Match> match = MatchService.getInstance().getMatch(matchId);
+
+        if (!match.isPresent()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
         if ("start".equals(action)) {
-            startMatch(matchId, response);
+            startMatch(match.get(), response);
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
         }
     }
 
-    private void startMatch(String matchId, HttpServletResponse response) {
+    private void startMatch(Match match, HttpServletResponse response) {
 
-        Optional<Match> matchOpt = MatchService.getInstance().getMatch(matchId);
-
-        if (matchOpt.isPresent()) {
-
-            if (MatchService.getInstance().startMatch(matchOpt.get())) {
-                response.setStatus(HttpServletResponse.SC_OK);
-            } else {
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            }
+        if (MatchService.getInstance().startMatch(match)) {
+            response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 }

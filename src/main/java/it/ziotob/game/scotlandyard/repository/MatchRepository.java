@@ -3,6 +3,7 @@ package it.ziotob.game.scotlandyard.repository;
 import it.ziotob.game.scotlandyard.database.Database;
 import it.ziotob.game.scotlandyard.database.Event;
 import it.ziotob.game.scotlandyard.model.Match;
+import it.ziotob.game.scotlandyard.model.Position;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -43,5 +44,14 @@ public class MatchRepository {
 
     public void startMatch(Match match, LocalDateTime dateTime) {
         database.putEvent(new Event(match.getId(), Match.EVENT_START, null, dateTime), Match.GROUP);
+    }
+
+    public void addPosition(Match match, Position position, LocalDateTime dateTime) {
+
+        database.putEvent(new Event(match.getId(), Match.EVENT_POSITION_GENERATE, position.getNumber().toString(), dateTime), Match.GROUP);
+
+        if (position.getMisterX()) {
+            database.putEvent(new Event(match.getId(), Match.EVENT_POSITION_MISTER_X, position.getNumber().toString(), dateTime), Match.GROUP);
+        }
     }
 }

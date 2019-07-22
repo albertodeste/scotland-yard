@@ -23,6 +23,9 @@ public class Match {
     public static final String EVENT_CREATE = "create";
     public static final String EVENT_ADDED_PLAYER = "added_player";
     public static final String EVENT_START = "start";
+    public static final String EVENT_POSITION_GENERATE = "position_generate";
+    public static final String EVENT_POSITION_USE = "position_use";
+    public static final String EVENT_POSITION_MISTER_X = "position_mister_x";
 
     private static final Long EXPIRATION_TIMEOUT = 60L;
 
@@ -30,6 +33,7 @@ public class Match {
     private LocalDateTime startedTime;
     private Boolean started = false;
     private List<String> relatedPlayerIds = new LinkedList<>();
+    private List<Position> positions = new LinkedList<>();
 
     public static Optional<Match> buildFromEvents(Stream<Event> eventStream) {
 
@@ -63,6 +67,12 @@ public class Match {
             relatedPlayerIds.add(event.getValue());
         } else if (EVENT_START.equals(event.getType())) {
             started = true;
+        } else if(EVENT_POSITION_GENERATE.equals(event.getType())) {
+            positions.add(new Position(Long.parseLong(event.getValue())));
+        } else if (EVENT_POSITION_USE.equals(event.getType())) {
+            positions.stream().filter(p -> p.getNumber().toString().equals(event.getValue())).findFirst().ifPresent(Position::setUsed);
+        } else if (EVENT_POSITION_MISTER_X.equals(event.getType())) {
+            positions.stream().filter(p -> p.getNumber().toString().equals(event.getValue())).findFirst().ifPresent(Position::setMisterX);
         } else {
             throw new RuntimeException("Trying to apply event of type " + event.getType() + " on Match object");
         }
