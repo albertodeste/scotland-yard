@@ -66,4 +66,8 @@ public class MatchStatus {
 
         return matchHasPositions && matchHasFreePositions && isPlacePlayers();
     }
+
+    public boolean canAddPlayers() {
+        return isAddPlayers();
+    }
 }

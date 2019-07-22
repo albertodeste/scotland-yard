@@ -23,21 +23,28 @@ public class PlayerHandler extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         Map<String, Object> requestBody = ServletUtils.parseBody(request);
+        List<String> pathVariables = getPathVariables(request, BASE_URL);
 
-        String matchId = request.getRequestURI().replaceAll("^.*/player/", "").replaceAll("/.*$", "");
+        String matchId = pathVariables.stream().findFirst().orElseThrow(() -> new RuntimeException("Player POST called without matchId"));
         String name = (String) requestBody.get("name");
         String role = (String) requestBody.get("role");
 
-        Optional<Match> matchOpt = MatchService.getInstance().getMatch(matchId);
-        Optional<String> playerIdOpt = matchOpt.map(match -> PlayerService.getInstance().createPlayer(match, name, role));
+        Optional<Match> match = MatchService.getInstance().getMatch(matchId);
 
-        if (playerIdOpt.isPresent()) {
+        if (!match.isPresent()) {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
+        Optional<String> playerId = PlayerService.getInstance().createPlayer(match.get(), name, role);
+
+        if (playerId.isPresent()) {
 
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().println(String.format("{ \"id\": \"%s\" }", playerIdOpt.get()));
+            response.getWriter().println(String.format("{ \"id\": \"%s\" }", playerId.get()));
         } else {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 

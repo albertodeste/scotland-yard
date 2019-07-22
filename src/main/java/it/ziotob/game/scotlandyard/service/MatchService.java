@@ -16,7 +16,8 @@ import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.Arrays.asList;
+import static it.ziotob.game.scotlandyard.model.map.Map.POSITIONS_MISTER_X;
+import static it.ziotob.game.scotlandyard.model.map.Map.POSITIONS_PLAYERS;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.isNull;
 
@@ -45,7 +46,6 @@ public class MatchService {
     }
 
     public void addPlayer(Match match, String playerId, LocalDateTime dateTime) {
-        //TODO return error if match already started
         matchRepository.addPlayer(match, playerId, dateTime);
     }
 
@@ -66,25 +66,21 @@ public class MatchService {
         }
     }
 
-    private List<Position> generatePositions(Match match, LocalDateTime dateTime) {
+    private void generatePositions(Match match, LocalDateTime dateTime) {
 
         final Random random = new Random();
 
-        final List<Long> mapPositions = asList(197L, 112L, 53L, 132L, 91L, 198L, 94L, 155L, 174L, 103L, 34L, 13L, 26L, 29L, 138L, 141L, 50L, 117L); //TODO move into Map.Positions
-        final List<Long> misterXPositions = asList(10L, 12L, 100L, 120L); //TODO move into Map.PositionsMisterX
-
-        List<Position> positions = Stream.generate(() -> random.nextInt(mapPositions.size() - 1))
+        List<Position> positions = Stream.generate(() -> random.nextInt(POSITIONS_PLAYERS.size() - 1))
                 .distinct()
                 .limit(match.getRelatedPlayerIds().size() - 1)
-                .map(mapPositions::get)
+                .map(POSITIONS_PLAYERS::get)
                 .map(Position::new)
                 .collect(Collectors.toList());
 
-        Position misterXPosition = new Position(misterXPositions.get(random.nextInt(misterXPositions.size() - 1)));
+        Position misterXPosition = new Position(POSITIONS_MISTER_X.get(random.nextInt(POSITIONS_MISTER_X.size() - 1)));
         misterXPosition.setMisterX();
 
-        return Stream.concat(positions.stream(), Stream.of(misterXPosition))
-                .peek(position -> matchRepository.addPosition(match, position, dateTime))
-                .collect(Collectors.toList());
+        Stream.concat(positions.stream(), Stream.of(misterXPosition))
+                .forEach(position -> matchRepository.addPosition(match, position, dateTime));
     }
 }

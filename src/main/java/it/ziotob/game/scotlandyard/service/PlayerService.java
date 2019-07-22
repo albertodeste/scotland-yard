@@ -33,14 +33,23 @@ public class PlayerService {
         return instance;
     }
 
-    public String createPlayer(Match match, String name, String role) {
+    public Optional<String> createPlayer(Match match, String name, String role) {
 
-        LocalDateTime dateTime = LocalDateTime.now();
-        String playerId = playerRepository.createPlayer(dateTime, name, role, match.getId());
+        List<Player> players = getPlayers(match.getRelatedPlayerIds()).collect(Collectors.toList());
 
-        MatchService.getInstance().addPlayer(match, playerId, dateTime);
+        MatchStatus matchStatus = new MatchStatus(match, players);
 
-        return playerId;
+        if (matchStatus.canAddPlayers()) {
+
+            LocalDateTime dateTime = LocalDateTime.now();
+            String playerId = playerRepository.createPlayer(dateTime, name, role, match.getId());
+
+            MatchService.getInstance().addPlayer(match, playerId, dateTime);
+
+            return Optional.of(playerId);
+        } else {
+            return Optional.empty();
+        }
     }
 
     public Optional<Player> getPlayer(String playerId) {

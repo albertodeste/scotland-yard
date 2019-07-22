@@ -1,6 +1,7 @@
 package it.ziotob.game.scotlandyard.model;
 
 import it.ziotob.game.scotlandyard.database.Event;
+import it.ziotob.game.scotlandyard.service.MatchService;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -63,7 +64,7 @@ public class Player {
         } else if (EVENT_SET_ROLE.equals(event.getType())) {
             role = event.getValue();
         } else if (EVENT_SET_POSITION.equals(event.getType())) {
-            position = Long.parseLong(event.getValue()); //TODO check validity of position, load game ad X moment and check if position is available
+            position = Long.parseLong(event.getValue()); //TODO validate position is OK for Match at moment event.getDateTime()
         } else if (EVENT_SET_MATCH_ID.equals(event.getType())) {
             matchId = event.getValue();
         } else {
