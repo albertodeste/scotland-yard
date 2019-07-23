@@ -70,9 +70,17 @@ public class PlayerHandler extends HttpServlet {
 
     private void placePlayer(Player player, List<String> pathVariables, HttpServletResponse response) {
 
-        Long playerPosition = pathVariables.stream().skip(2L).findFirst().map(Long::parseLong).orElseThrow(() -> new RuntimeException("Trying to call Player PUT place without position"));
+        String playerPosition = pathVariables.stream().skip(2L).findFirst().orElseThrow(() -> new RuntimeException("Trying to call Player PUT place without position"));
+        Boolean isMisterXPosition = "mister_x".equals(playerPosition);
 
-        if (PlayerService.getInstance().placePlayer(player, playerPosition)) {
+        if (isMisterXPosition) {
+
+            if (PlayerService.getInstance().placeMisterX(player)) {
+                response.setStatus(HttpServletResponse.SC_OK);
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } else if (PlayerService.getInstance().placePlayer(player, Long.parseLong(playerPosition))) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);

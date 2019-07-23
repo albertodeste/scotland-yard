@@ -4,6 +4,7 @@ import it.ziotob.game.scotlandyard.database.Database;
 import it.ziotob.game.scotlandyard.model.Match;
 import it.ziotob.game.scotlandyard.model.MatchStatus;
 import it.ziotob.game.scotlandyard.model.Player;
+import it.ziotob.game.scotlandyard.model.Position;
 import it.ziotob.game.scotlandyard.repository.PlayerRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Collections.singletonList;
@@ -35,9 +35,7 @@ public class PlayerService {
 
     public Optional<String> createPlayer(Match match, String name, String role) {
 
-        List<Player> players = getPlayers(match.getRelatedPlayerIds()).collect(Collectors.toList());
-
-        MatchStatus matchStatus = new MatchStatus(match, players);
+        MatchStatus matchStatus = MatchStatusService.getInstance().getMatchStatus(match);
 
         if (matchStatus.canAddPlayers()) {
 
@@ -62,14 +60,15 @@ public class PlayerService {
 
     public boolean placePlayer(Player player, Long position) {
 
-        Match match = MatchService.getInstance().getMatch(player.getMatchId()).orElseThrow(() -> new RuntimeException("Player with id " + player.getId() + " associated to not existing match " + player.getMatchId() + " while placing player"));
-        List<Player> players = PlayerService.getInstance().getPlayers(match.getRelatedPlayerIds()).collect(Collectors.toList());
-        MatchStatus matchStatus = new MatchStatus(match, players);
+        MatchStatus matchStatus = MatchStatusService.getInstance().getMatchStatus(player);
+        Match match = matchStatus.getMatch();
 
         boolean isValidPosition = match.getPositions().stream().filter(p -> p.getMisterX() == player.isMisterX()).filter(p -> !p.getUsed()).anyMatch(p -> position.equals(p.getNumber()));
 
         if (matchStatus.canPlacePlayers() && !player.isPlaced() && isValidPosition) {
-            return playerRepository.placePlayer(player, position, LocalDateTime.now());
+
+            LocalDateTime dateTime = LocalDateTime.now();
+            return playerRepository.placePlayer(player, position, dateTime) && MatchService.getInstance().usePosition(match, position, dateTime);
         } else {
             return false;
         }
@@ -81,5 +80,24 @@ public class PlayerService {
         //TODO validate move is correct through map
         //TODO validate no other detectives in this position
         return true;
+    }
+
+    public boolean placeMisterX(Player player) {
+
+        MatchStatus matchStatus = MatchStatusService.getInstance().getMatchStatus(player);
+        Match match = matchStatus.getMatch();
+
+        Optional<Position> position = match.getPositions().stream().filter(Position::getMisterX).findFirst();
+        boolean misterXPositionValid = position.filter(p -> !p.getUsed()).isPresent() && !match.getPositions().isEmpty();
+
+        if (player.isMisterX() && matchStatus.canPlacePlayers() && misterXPositionValid) {
+
+            LocalDateTime dateTime = LocalDateTime.now();
+
+            MatchService.getInstance().usePosition(match, position.get().getNumber(), dateTime);
+            return playerRepository.placePlayer(player, position.get().getNumber(), dateTime);
+        } else {
+            return false;
+        }
     }
 }

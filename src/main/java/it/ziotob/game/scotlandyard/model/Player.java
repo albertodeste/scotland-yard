@@ -63,8 +63,8 @@ public class Player {
             name = event.getValue();
         } else if (EVENT_SET_ROLE.equals(event.getType())) {
             role = event.getValue();
-        } else if (EVENT_SET_POSITION.equals(event.getType())) {
-            position = Long.parseLong(event.getValue()); //TODO validate position is OK for Match at moment event.getDateTime()
+        } else if (EVENT_SET_POSITION.equals(event.getType()) && MatchService.getInstance().canSetPositionAtInstant(matchId, Long.parseLong(event.getValue()), event.getDateTime())) {
+            position = Long.parseLong(event.getValue());
         } else if (EVENT_SET_MATCH_ID.equals(event.getType())) {
             matchId = event.getValue();
         } else {

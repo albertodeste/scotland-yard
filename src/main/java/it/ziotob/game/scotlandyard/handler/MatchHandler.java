@@ -2,10 +2,9 @@ package it.ziotob.game.scotlandyard.handler;
 
 import it.ziotob.game.scotlandyard.model.Match;
 import it.ziotob.game.scotlandyard.model.MatchStatus;
-import it.ziotob.game.scotlandyard.model.Player;
 import it.ziotob.game.scotlandyard.model.Position;
 import it.ziotob.game.scotlandyard.service.MatchService;
-import it.ziotob.game.scotlandyard.service.PlayerService;
+import it.ziotob.game.scotlandyard.service.MatchStatusService;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -65,9 +64,7 @@ public class MatchHandler extends HttpServlet {
 
     private void getMatchStatus(Match match, HttpServletResponse response) throws IOException {
 
-        List<Player> players = PlayerService.getInstance().getPlayers(match.getRelatedPlayerIds()).collect(Collectors.toList());
-
-        MatchStatus status = new MatchStatus(match, players);
+        MatchStatus status = MatchStatusService.getInstance().getMatchStatus(match);
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType("application/json");

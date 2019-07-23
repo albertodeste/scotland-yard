@@ -6,6 +6,8 @@ import it.ziotob.game.scotlandyard.handler.MatchHandler;
 import it.ziotob.game.scotlandyard.handler.PlayerHandler;
 import it.ziotob.game.scotlandyard.handler.StatusHandler;
 import it.ziotob.game.scotlandyard.model.Match;
+import it.ziotob.game.scotlandyard.model.Player;
+import it.ziotob.game.scotlandyard.model.Position;
 import it.ziotob.game.scotlandyard.service.MatchService;
 import it.ziotob.game.scotlandyard.service.PlayerService;
 import org.eclipse.jetty.server.Connector;
@@ -16,6 +18,10 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Main {
 
@@ -46,6 +52,24 @@ public class Main {
 
         injectMatch();
         injectPlayers();
+        startMatch();
+        setOverlappingPositions();
+    }
+
+    private static void setOverlappingPositions() {
+
+        Match match = MatchService.getInstance().getMatch("0").orElseThrow(() -> new RuntimeException("ERROR"));
+        List<Player> players = PlayerService.getInstance().getPlayers(match.getRelatedPlayerIds()).collect(Collectors.toList());
+
+        Position position = MatchService.getInstance().getMatch(match.getId()).map(Match::getPositions).map(Collection::stream).flatMap(Stream::findFirst).orElseThrow(() -> new RuntimeException("ERROR"));
+
+        players.stream()
+                .filter(player -> player.getRole().equals("detective"))
+                .forEach(player -> PlayerService.getInstance().placePlayer(player, position.getNumber()));
+    }
+
+    private static void startMatch() {
+        MatchService.getInstance().getMatch("0").map(match -> MatchService.getInstance().startMatch(match));
     }
 
     private static void injectMatch() {
@@ -58,6 +82,7 @@ public class Main {
                 .ifPresent(match -> {
                     PlayerService.getInstance().createPlayer(match, "ziotob", "detective");
                     PlayerService.getInstance().createPlayer(match, "francesco", "mister_x");
+                    PlayerService.getInstance().createPlayer(match, "alberto", "detective");
                 });
     }
 }

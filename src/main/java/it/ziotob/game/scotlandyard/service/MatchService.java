@@ -3,7 +3,6 @@ package it.ziotob.game.scotlandyard.service;
 import it.ziotob.game.scotlandyard.database.Database;
 import it.ziotob.game.scotlandyard.model.Match;
 import it.ziotob.game.scotlandyard.model.MatchStatus;
-import it.ziotob.game.scotlandyard.model.Player;
 import it.ziotob.game.scotlandyard.model.Position;
 import it.ziotob.game.scotlandyard.repository.MatchRepository;
 import lombok.AccessLevel;
@@ -51,8 +50,7 @@ public class MatchService {
 
     public boolean startMatch(Match match) {
 
-        List<Player> players = PlayerService.getInstance().getPlayers(match.getRelatedPlayerIds()).collect(Collectors.toList());
-        MatchStatus matchStatus = new MatchStatus(match, players);
+        MatchStatus matchStatus = MatchStatusService.getInstance().getMatchStatus(match);
 
         if (matchStatus.canStart()) {
 
@@ -82,5 +80,17 @@ public class MatchService {
 
         Stream.concat(positions.stream(), Stream.of(misterXPosition))
                 .forEach(position -> matchRepository.addPosition(match, position, dateTime));
+    }
+
+    public boolean canSetPositionAtInstant(String matchId, Long number, LocalDateTime dateTime) {
+
+        return matchRepository.getMatches(singletonList(matchId), dateTime).findFirst()
+                .map(m -> m.getPositions().stream())
+                .orElse(Stream.empty())
+                .anyMatch(position -> !position.getUsed() && number.equals(position.getNumber()));
+    }
+
+    public boolean usePosition(Match match, Long position, LocalDateTime dateTime) {
+        return matchRepository.usePosition(match, position, dateTime);
     }
 }

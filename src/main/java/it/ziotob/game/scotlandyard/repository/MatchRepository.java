@@ -28,14 +28,7 @@ public class MatchRepository {
     }
 
     public Stream<Match> getMatches(List<String> matchIds) {
-
-        return database.getEvents(Match.GROUP)
-                .collect(Collectors.groupingBy(Event::getId))
-                .entrySet().stream()
-                .filter(entry -> matchIds.contains(entry.getKey()))
-                .map(matchEvents -> Match.buildFromEvents(matchEvents.getValue().stream()))
-                .filter(Optional::isPresent)
-                .map(Optional::get);
+        return getMatches(matchIds, LocalDateTime.MAX);
     }
 
     public void addPlayer(Match match, String playerId, LocalDateTime dateTime) {
@@ -53,5 +46,23 @@ public class MatchRepository {
         if (position.getMisterX()) {
             database.putEvent(new Event(match.getId(), Match.EVENT_POSITION_MISTER_X, position.getNumber().toString(), dateTime), Match.GROUP);
         }
+    }
+
+    public Stream<Match> getMatches(List<String> matchIds, LocalDateTime dateTime) {
+
+        return database.getEvents(Match.GROUP)
+                .filter(event -> event.getDateTime().isBefore(dateTime))
+                .collect(Collectors.groupingBy(Event::getId))
+                .entrySet().stream()
+                .filter(entry -> matchIds.contains(entry.getKey()))
+                .map(matchEvents -> Match.buildFromEvents(matchEvents.getValue().stream()))
+                .filter(Optional::isPresent)
+                .map(Optional::get);
+    }
+
+    public boolean usePosition(Match match, Long positionNumber, LocalDateTime dateTime) {
+
+        database.putEvent(new Event(match.getId(), Match.EVENT_POSITION_USE, positionNumber.toString(), dateTime), Match.GROUP);
+        return true;
     }
 }
