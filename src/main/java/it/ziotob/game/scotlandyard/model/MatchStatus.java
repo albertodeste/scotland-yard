@@ -22,17 +22,38 @@ public class MatchStatus {
             return "move_mister_x";
         } else if (isMovePlayers()) {
             return "move_players";
+        } else if (isMisterXWin()) {
+            return "mister_x_wins";
+        } else if (isDetectivesWin()) {
+            return "detectives_win";
         } else {
             return "unknown";
         }
     }
 
+    private boolean isDetectivesWin() {
+        return false; //TODO implement
+    }
+
+    private boolean isMisterXWin() {
+        return false; //TODO implement
+    }
+
     private boolean isMovePlayers() {
-        return true; //TODO implement
+
+        boolean allPlayersPlaced = players.stream().allMatch(Player::isPlaced) && !players.isEmpty();
+        boolean allDetectivesCanMove = players.stream().filter(Player::isDetective).map(Player::getResidualRoundMoves).allMatch(residual -> residual > 0);
+        boolean misterXCanMove = players.stream().filter(Player::isMisterX).map(Player::getResidualRoundMoves).allMatch(residual -> residual > 0);
+
+        return allPlayersPlaced && allDetectivesCanMove && !misterXCanMove;
     }
 
     private boolean isMoveMisterX() {
-        return true; //TODO implement
+
+        boolean allPlayersPlaced = players.stream().allMatch(Player::isPlaced) && !players.isEmpty();
+        boolean allPlayersCanMove = players.stream().map(Player::getResidualRoundMoves).allMatch(residual -> residual > 0);
+
+        return allPlayersPlaced && allPlayersCanMove;
     }
 
     private boolean isPlacePlayers() {

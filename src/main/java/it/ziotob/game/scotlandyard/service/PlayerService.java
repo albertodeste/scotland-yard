@@ -68,7 +68,14 @@ public class PlayerService {
         if (matchStatus.canPlacePlayers() && !player.isPlaced() && isValidPosition) {
 
             LocalDateTime dateTime = LocalDateTime.now();
-            return playerRepository.placePlayer(player, position, dateTime) && MatchService.getInstance().usePosition(match, position, dateTime);
+            MatchService.getInstance().usePosition(match, position, dateTime);
+            playerRepository.placePlayer(player, position, dateTime);
+
+            if (allPlayersPlacedExcept(matchStatus.getPlayers(), player)) {
+                nextRound(matchStatus.getPlayers());
+            }
+
+            return true;
         } else {
             return false;
         }
@@ -76,9 +83,34 @@ public class PlayerService {
 
     public boolean movePlayer(Player player, Long startingPosition, Long endingPosition) {
 
-        //TODO validate game in correct phase (move_players, move_mister_x)
+        if (player.isMisterX()) {
+            return moveMisterX(player, startingPosition, endingPosition);
+        } else {
+            return moveDetective(player, startingPosition, endingPosition);
+        }
+    }
+
+    private boolean moveMisterX(Player player, Long startPosition, Long endPosition) {
+
+        //TODO validate game in correct phase move_mister_x
         //TODO validate move is correct through map
+        //TODO validate residual moves > 0
+        //TODO validate no detectives in this position
+        //TODO elaborate residuals as difference from detectives moves
+        //TODO validate residuals for the move type
+
+        return true;
+    }
+
+    private boolean moveDetective(Player player, Long startPosition, Long endPosition) {
+
+        //TODO validate game in correct phase move_players
+        //TODO validate move is correct through map
+        //TODO validate player didn't move in this turn
         //TODO validate no other detectives in this position
+        //TODO if all detectives moved => emit NEXT_ROUND event to all players (included misterX)
+        //TODO validate residuals for the move type are correct
+
         return true;
     }
 
@@ -95,9 +127,25 @@ public class PlayerService {
             LocalDateTime dateTime = LocalDateTime.now();
 
             MatchService.getInstance().usePosition(match, position.get().getNumber(), dateTime);
-            return playerRepository.placePlayer(player, position.get().getNumber(), dateTime);
+            playerRepository.placePlayer(player, position.get().getNumber(), dateTime);
+
+            if (allPlayersPlacedExcept(matchStatus.getPlayers(), player)) {
+                nextRound(matchStatus.getPlayers());
+            }
+
+            return true;
         } else {
             return false;
         }
+    }
+
+    private boolean allPlayersPlacedExcept(List<Player> players, Player player) {
+        return players.stream().filter(p -> !p.getId().equals(player.getId())).allMatch(Player::isPlaced);
+    }
+
+    private void nextRound(List<Player> players) {
+
+        final LocalDateTime dateTime = LocalDateTime.now();
+        players.forEach(player -> playerRepository.nextRound(player, dateTime));
     }
 }

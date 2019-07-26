@@ -34,15 +34,18 @@ public class PlayerRepository {
         return database.getEvents(Player.GROUP)
                 .collect(Collectors.groupingBy(Event::getId))
                 .entrySet().stream()
+                .parallel()
                 .filter(entry -> playerIds.contains(entry.getKey()))
                 .map(playerEvents -> Player.buildFromEvents(playerEvents.getValue().stream()))
                 .filter(Optional::isPresent)
                 .map(Optional::get);
     }
 
-    public boolean placePlayer(Player player, Long position, LocalDateTime dateTime) {
-
+    public void placePlayer(Player player, Long position, LocalDateTime dateTime) {
         database.putEvent(new Event(player.getId(), Player.EVENT_SET_POSITION, position.toString(), dateTime), Player.GROUP);
-        return true;
+    }
+
+    public void nextRound(Player player, LocalDateTime dateTime) {
+        database.putEvent(new Event(player.getId(), Player.EVENT_NEW_ROUND, null, dateTime), Player.GROUP);
     }
 }

@@ -18,10 +18,8 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.eclipse.jetty.util.thread.ThreadPool;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class Main {
 
@@ -53,19 +51,19 @@ public class Main {
         injectMatch();
         injectPlayers();
         startMatch();
-        setOverlappingPositions();
+        setPositions();
     }
 
-    private static void setOverlappingPositions() {
+    private static void setPositions() {
 
         Match match = MatchService.getInstance().getMatch("0").orElseThrow(() -> new RuntimeException("ERROR"));
         List<Player> players = PlayerService.getInstance().getPlayers(match.getRelatedPlayerIds()).collect(Collectors.toList());
+        List<Player> detectives = players.stream().filter(p -> !p.isMisterX()).collect(Collectors.toList());
+        Player misterX = players.stream().filter(Player::isMisterX).findFirst().orElseThrow(() -> new RuntimeException("ERROR"));
+        List<Position> detectivePositions = match.getPositions().stream().filter(p -> !p.getMisterX()).collect(Collectors.toList());
 
-        Position position = MatchService.getInstance().getMatch(match.getId()).map(Match::getPositions).map(Collection::stream).flatMap(Stream::findFirst).orElseThrow(() -> new RuntimeException("ERROR"));
-
-        players.stream()
-                .filter(player -> player.getRole().equals("detective"))
-                .forEach(player -> PlayerService.getInstance().placePlayer(player, position.getNumber()));
+        PlayerService.getInstance().placeMisterX(misterX);
+        detectives.forEach(detective -> PlayerService.getInstance().placePlayer(detective, detectivePositions.get(detectives.indexOf(detective)).getNumber()));
     }
 
     private static void startMatch() {

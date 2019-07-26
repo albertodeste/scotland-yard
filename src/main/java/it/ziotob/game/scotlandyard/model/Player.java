@@ -24,6 +24,12 @@ public class Player {
     public static final String EVENT_SET_ROLE = "set_role";
     public static final String EVENT_SET_POSITION = "set_position";
     public static final String EVENT_SET_MATCH_ID = "set_match_id";
+    public static final String EVENT_MOVE_LOW = "move_low";
+    public static final String EVENT_MOVE_MID = "move_mid";
+    public static final String EVENT_MOVE_HIGH = "move_high";
+    public static final String EVENT_MOVE_MISTER_X = "move_mister_x";
+    public static final String EVENT_MOVE_DOUBLE = "move_double";
+    public static final String EVENT_NEW_ROUND = "new_round";
 
     private String id;
     private String name;
@@ -31,6 +37,13 @@ public class Player {
     private LocalDateTime createdAt;
     private Long position;
     private String matchId;
+    private Integer moveLowResidual;
+    private Integer moveMidResidual;
+    private Integer moveHighResidual;
+    private Integer moveMisterXResidual;
+    private Integer moveDoubleResidual;
+    private Integer residualRoundMoves = 0;
+    private Integer currentRound = 0;
 
     public static Optional<Player> buildFromEvents(Stream<Event> eventStream) {
 
@@ -44,12 +57,17 @@ public class Player {
 
     public String toJSON() {
 
-        return String.format("{\"id\": \"%s\", \"name\": \"%s\", \"role\": \"%s\", \"created_at\": \"%s\", \"position\": %s}",
+        return String.format("{\"id\": \"%s\", \"name\": \"%s\", \"role\": \"%s\", \"created_at\": \"%s\", \"position\": %s, \"move_low\": %d, \"move_mid\": %d, \"move_high\": %d, \"move_mister_x\": %d, \"move_double\": %d}",
                 id,
                 name,
                 role,
                 DATE_TIME_JSON_FORMATTER.format(createdAt),
-                formatString(position)
+                formatString(position),
+                moveLowResidual,
+                moveMidResidual,
+                moveHighResidual,
+                moveMisterXResidual,
+                moveDoubleResidual
         );
     }
 
@@ -62,21 +80,90 @@ public class Player {
         } else if (EVENT_SET_NAME.equals(event.getType())) {
             name = event.getValue();
         } else if (EVENT_SET_ROLE.equals(event.getType())) {
+
             role = event.getValue();
+            initResiduals();
         } else if (EVENT_SET_POSITION.equals(event.getType()) && MatchService.getInstance().canSetPositionAtInstant(matchId, Long.parseLong(event.getValue()), event.getDateTime())) {
             position = Long.parseLong(event.getValue());
         } else if (EVENT_SET_MATCH_ID.equals(event.getType())) {
             matchId = event.getValue();
+        } else if (EVENT_MOVE_LOW.equals(event.getType()) && canMove(moveLowResidual)) {
+
+            position = Long.parseLong(event.getValue());
+            moveLowResidual--;
+            residualRoundMoves--;
+        } else if (EVENT_MOVE_MID.equals(event.getType()) && canMove(moveMidResidual)) {
+
+            position = Long.parseLong(event.getValue());
+            moveMidResidual--;
+            residualRoundMoves--;
+        } else if (EVENT_MOVE_HIGH.equals(event.getType()) && canMove(moveHighResidual)) {
+
+            position = Long.parseLong(event.getValue());
+            moveHighResidual--;
+            residualRoundMoves--;
+        } else if (EVENT_MOVE_MISTER_X.equals(event.getType()) && canMove(moveMisterXResidual)) {
+
+            position = Long.parseLong(event.getValue());
+            moveMisterXResidual--;
+            residualRoundMoves--;
+        } else if (EVENT_MOVE_DOUBLE.equals(event.getType()) && canMove(moveDoubleResidual)) {
+
+            residualRoundMoves++;
+            moveDoubleResidual--;
+        } else if (EVENT_NEW_ROUND.equals(event.getType())) {
+
+            residualRoundMoves = 1;
+            currentRound++;
         } else {
             throw new RuntimeException("Trying to apply event of type " + event.getType() + " on Player object");
         }
+    }
+
+    private boolean canMove(Integer residual) {
+        return residualRoundMoves > 0 && (residual > 0 || (isMisterX() && isFirstMove()));
+    }
+
+    private void initMisterXResiduals() {
+
+        moveLowResidual = 0;
+        moveMidResidual = 0;
+        moveHighResidual = 0;
+        moveMisterXResidual = 5;
+        moveDoubleResidual = 2;
+    }
+
+    private void initDetectiveResiduals() {
+
+        moveLowResidual = 13;
+        moveMidResidual = 8;
+        moveHighResidual = 3;
+        moveMisterXResidual = 0;
+        moveDoubleResidual = 0;
     }
 
     public boolean isMisterX() {
         return "mister_x".equals(role);
     }
 
+    public boolean isDetective() {
+        return !isMisterX();
+    }
+
     public boolean isPlaced() {
         return nonNull(position);
+    }
+
+    public boolean isFirstMove() {
+        return currentRound == 1;
+    }
+
+    private void initResiduals() {
+
+        if (isMisterX()) {
+            initMisterXResiduals();
+        } else {
+            initDetectiveResiduals();
+        }
     }
 }
