@@ -43,7 +43,6 @@ public class Player {
     private Integer moveMisterXResidual;
     private Integer moveDoubleResidual;
     private Integer residualRoundMoves = 0;
-    private Integer currentRound = 0;
 
     public static Optional<Player> buildFromEvents(Stream<Event> eventStream) {
 
@@ -87,41 +86,39 @@ public class Player {
             position = Long.parseLong(event.getValue());
         } else if (EVENT_SET_MATCH_ID.equals(event.getType())) {
             matchId = event.getValue();
-        } else if (EVENT_MOVE_LOW.equals(event.getType()) && canMove(moveLowResidual)) {
+        } else if (EVENT_MOVE_LOW.equals(event.getType()) && canMove()) {
 
             position = Long.parseLong(event.getValue());
             moveLowResidual--;
             residualRoundMoves--;
-        } else if (EVENT_MOVE_MID.equals(event.getType()) && canMove(moveMidResidual)) {
+        } else if (EVENT_MOVE_MID.equals(event.getType()) && canMove()) {
 
             position = Long.parseLong(event.getValue());
             moveMidResidual--;
             residualRoundMoves--;
-        } else if (EVENT_MOVE_HIGH.equals(event.getType()) && canMove(moveHighResidual)) {
+        } else if (EVENT_MOVE_HIGH.equals(event.getType()) && canMove()) {
 
             position = Long.parseLong(event.getValue());
             moveHighResidual--;
             residualRoundMoves--;
-        } else if (EVENT_MOVE_MISTER_X.equals(event.getType()) && canMove(moveMisterXResidual)) {
+        } else if (EVENT_MOVE_MISTER_X.equals(event.getType()) && canMove()) {
 
             position = Long.parseLong(event.getValue());
             moveMisterXResidual--;
             residualRoundMoves--;
-        } else if (EVENT_MOVE_DOUBLE.equals(event.getType()) && canMove(moveDoubleResidual)) {
+        } else if (EVENT_MOVE_DOUBLE.equals(event.getType()) && canMove()) {
 
             residualRoundMoves++;
             moveDoubleResidual--;
         } else if (EVENT_NEW_ROUND.equals(event.getType())) {
-
             residualRoundMoves = 1;
-            currentRound++;
         } else {
             throw new RuntimeException("Trying to apply event of type " + event.getType() + " on Player object");
         }
     }
 
-    private boolean canMove(Integer residual) {
-        return residualRoundMoves > 0 && (residual > 0 || (isMisterX() && isFirstMove()));
+    private boolean canMove() {
+        return residualRoundMoves > 0;
     }
 
     private void initMisterXResiduals() {
@@ -152,10 +149,6 @@ public class Player {
 
     public boolean isPlaced() {
         return nonNull(position);
-    }
-
-    public boolean isFirstMove() {
-        return currentRound == 1;
     }
 
     private void initResiduals() {
