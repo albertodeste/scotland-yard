@@ -12,6 +12,8 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static it.ziotob.game.scotlandyard.model.Player.*;
+
 @RequiredArgsConstructor
 public class PlayerRepository {
 
@@ -47,5 +49,24 @@ public class PlayerRepository {
 
     public void nextRound(Player player, LocalDateTime dateTime) {
         database.putEvent(new Event(player.getId(), Player.EVENT_NEW_ROUND, null, dateTime), Player.GROUP);
+    }
+
+	public void movePlayer(Player player, Long endPosition, String moveType, LocalDateTime dateTime) {
+        database.putEvent(new Event(player.getId(), mapMoveTypeToEvent(moveType), endPosition.toString(), dateTime), Player.GROUP);
+	}
+
+    private String mapMoveTypeToEvent(String moveType) {
+
+        if ("low".equals(moveType)) {
+            return EVENT_MOVE_LOW;
+        } else if ("mid".equals(moveType)) {
+            return EVENT_MOVE_MID;
+        } else if ("high".equals(moveType)) {
+            return EVENT_MOVE_HIGH;
+        } else if ("mister_x".equals(moveType)) {
+            return EVENT_MOVE_MISTER_X;
+        } else {
+            throw new RuntimeException("Move type " + moveType + " not mappable for persistency");
+        }
     }
 }

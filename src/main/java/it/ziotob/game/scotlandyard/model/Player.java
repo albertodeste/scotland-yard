@@ -56,17 +56,12 @@ public class Player {
 
     public String toJSON() {
 
-        return String.format("{\"id\": \"%s\", \"name\": \"%s\", \"role\": \"%s\", \"created_at\": \"%s\", \"position\": %s, \"move_low\": %d, \"move_mid\": %d, \"move_high\": %d, \"move_mister_x\": %d, \"move_double\": %d}",
+        return String.format("{\"id\": \"%s\", \"name\": \"%s\", \"role\": \"%s\", \"created_at\": \"%s\", \"position\": %s}",
                 id,
                 name,
                 role,
                 DATE_TIME_JSON_FORMATTER.format(createdAt),
-                formatString(position),
-                moveLowResidual,
-                moveMidResidual,
-                moveHighResidual,
-                moveMisterXResidual,
-                moveDoubleResidual
+                formatString(position)
         );
     }
 

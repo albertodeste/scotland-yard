@@ -93,4 +93,12 @@ public class MatchStatus {
     public boolean canAddPlayers() {
         return isAddPlayers();
     }
+
+	public boolean canMoveMisterX() {
+        return isMoveMisterX();
+	}
+
+    public boolean canMoveDetective() {
+        return isMovePlayers();
+    }
 }
