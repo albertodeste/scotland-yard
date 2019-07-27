@@ -42,10 +42,10 @@ public class MatchStatus {
     private boolean isMovePlayers() {
 
         boolean allPlayersPlaced = players.stream().allMatch(Player::isPlaced) && !players.isEmpty();
-        boolean allDetectivesCanMove = players.stream().filter(Player::isDetective).map(Player::getResidualRoundMoves).allMatch(residual -> residual > 0);
+        boolean anyDetectiveCanMove = players.stream().filter(Player::isDetective).map(Player::getResidualRoundMoves).anyMatch(residual -> residual > 0);
         boolean misterXCanMove = players.stream().filter(Player::isMisterX).map(Player::getResidualRoundMoves).allMatch(residual -> residual > 0);
 
-        return allPlayersPlaced && allDetectivesCanMove && !misterXCanMove;
+        return allPlayersPlaced && anyDetectiveCanMove && !misterXCanMove;
     }
 
     private boolean isMoveMisterX() {
