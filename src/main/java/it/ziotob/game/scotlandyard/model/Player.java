@@ -43,6 +43,7 @@ public class Player {
     private Integer moveMisterXResidual;
     private Integer moveDoubleResidual;
     private Integer residualRoundMoves = 0;
+    private Integer currentRound = 0;
 
     public static Optional<Player> buildFromEvents(Stream<Event> eventStream) {
 
@@ -106,7 +107,9 @@ public class Player {
             residualRoundMoves++;
             moveDoubleResidual--;
         } else if (EVENT_NEW_ROUND.equals(event.getType())) {
+
             residualRoundMoves = 1;
+            currentRound++;
         } else {
             throw new RuntimeException("Trying to apply event of type " + event.getType() + " on Player object");
         }

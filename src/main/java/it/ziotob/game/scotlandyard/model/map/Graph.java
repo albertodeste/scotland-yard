@@ -3,10 +3,8 @@ package it.ziotob.game.scotlandyard.model.map;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.Map;
-import java.util.Optional;
 
 public class Graph {
 
@@ -42,6 +40,10 @@ public class Graph {
                 .map(n -> n.get(destination))
                 .filter(type -> type.getValue().equals(moveType))
                 .isPresent();
+    }
+
+    public Map<Long, ConnectionType> getConnections(Long position) {
+        return Optional.ofNullable(connections.get(position)).orElse(Collections.emptyMap());
     }
 
     @RequiredArgsConstructor
