@@ -1,5 +1,7 @@
 package it.ziotob.game.scotlandyard.model.map;
 
+import it.ziotob.game.scotlandyard.model.residuals.ResidualMoves;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -144,12 +146,12 @@ public class Map {
         return graph.isConnected(position, endPosition, moveType);
     }
 
-    public static List<Long> getReachablePositions(Long position, List<String> types) {
+    public static List<Long> getReachablePositions(Long position, ResidualMoves residual) {
 
         return Optional.ofNullable(graph.getConnections(position))
                 .map(map -> map.entrySet().stream())
                 .orElse(Stream.empty())
-                .filter(entry -> types.contains(entry.getValue().getValue()))
+                .filter(entry -> residual.canDoMove(entry.getValue().getValue()))
                 .map(java.util.Map.Entry::getKey)
                 .collect(Collectors.toList());
     }

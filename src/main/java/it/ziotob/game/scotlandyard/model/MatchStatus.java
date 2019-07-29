@@ -1,14 +1,17 @@
 package it.ziotob.game.scotlandyard.model;
 
 import it.ziotob.game.scotlandyard.model.map.Map;
+import it.ziotob.game.scotlandyard.model.residuals.ResidualMoves;
+import it.ziotob.game.scotlandyard.service.PlayerService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
+import static java.util.Collections.emptyList;
 
 @RequiredArgsConstructor
 @Getter
@@ -42,9 +45,10 @@ public class MatchStatus {
         List<Player> detectives = players.stream().filter(Player::isDetective).collect(Collectors.toList());
         boolean detectiveOverMisterX = detectives.stream().map(Player::getPosition).anyMatch(position -> Objects.equals(position, misterXPosition));
 
-        List<String> misterXResiduals = asList("low", "mid", "high", "mister_x"); //TODO retrieve information from misterXResiduals
+        Optional<ResidualMoves> misterXResidualsOpt = players.stream().filter(Player::isMisterX).findFirst()
+                .map(player -> PlayerService.getInstance().getPlayerResidualMoves(player, this));
 
-        List<Long> misterXReachablePositions = Map.getReachablePositions(misterXPosition, misterXResiduals);
+        List<Long> misterXReachablePositions = misterXResidualsOpt.map(residuals -> Map.getReachablePositions(misterXPosition, residuals)).orElse(emptyList());
         List<Long> filteredMisterXReachablePositions = misterXReachablePositions.stream()
                 .filter(possiblePosition -> detectives.stream().map(Player::getPosition).noneMatch(detectivePosition -> Objects.equals(possiblePosition, detectivePosition)))
                 .collect(Collectors.toList());

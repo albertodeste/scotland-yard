@@ -37,11 +37,11 @@ public class Player {
     private LocalDateTime createdAt;
     private Long position;
     private String matchId;
-    private Integer moveLowResidual;
-    private Integer moveMidResidual;
-    private Integer moveHighResidual;
-    private Integer moveMisterXResidual;
-    private Integer moveDoubleResidual;
+    private Integer moveLow = 0;
+    private Integer moveMid = 0;
+    private Integer moveHigh = 0;
+    private Integer moveMisterX = 0;
+    private Integer moveDouble = 0;
     private Integer residualRoundMoves = 0;
     private Integer currentRound = 0;
 
@@ -75,9 +75,7 @@ public class Player {
         } else if (EVENT_SET_NAME.equals(event.getType())) {
             name = event.getValue();
         } else if (EVENT_SET_ROLE.equals(event.getType())) {
-
             role = event.getValue();
-            initResiduals();
         } else if (EVENT_SET_POSITION.equals(event.getType()) && MatchService.getInstance().canSetPositionAtInstant(matchId, Long.parseLong(event.getValue()), event.getDateTime())) {
             position = Long.parseLong(event.getValue());
         } else if (EVENT_SET_MATCH_ID.equals(event.getType())) {
@@ -85,27 +83,27 @@ public class Player {
         } else if (EVENT_MOVE_LOW.equals(event.getType()) && canMove()) {
 
             position = Long.parseLong(event.getValue());
-            moveLowResidual--;
+            moveLow++;
             residualRoundMoves--;
         } else if (EVENT_MOVE_MID.equals(event.getType()) && canMove()) {
 
             position = Long.parseLong(event.getValue());
-            moveMidResidual--;
+            moveMid++;
             residualRoundMoves--;
         } else if (EVENT_MOVE_HIGH.equals(event.getType()) && canMove()) {
 
             position = Long.parseLong(event.getValue());
-            moveHighResidual--;
+            moveHigh++;
             residualRoundMoves--;
         } else if (EVENT_MOVE_MISTER_X.equals(event.getType()) && canMove()) {
 
             position = Long.parseLong(event.getValue());
-            moveMisterXResidual--;
+            moveMisterX++;
             residualRoundMoves--;
         } else if (EVENT_MOVE_DOUBLE.equals(event.getType()) && canMove()) {
 
             residualRoundMoves++;
-            moveDoubleResidual--;
+            moveDouble++;
         } else if (EVENT_NEW_ROUND.equals(event.getType())) {
 
             residualRoundMoves = 1;
@@ -119,24 +117,6 @@ public class Player {
         return residualRoundMoves > 0;
     }
 
-    private void initMisterXResiduals() {
-
-        moveLowResidual = 0;
-        moveMidResidual = 0;
-        moveHighResidual = 0;
-        moveMisterXResidual = 5;
-        moveDoubleResidual = 2;
-    }
-
-    private void initDetectiveResiduals() {
-
-        moveLowResidual = 13;
-        moveMidResidual = 8;
-        moveHighResidual = 3;
-        moveMisterXResidual = 0;
-        moveDoubleResidual = 0;
-    }
-
     public boolean isMisterX() {
         return "mister_x".equals(role);
     }
@@ -147,14 +127,5 @@ public class Player {
 
     public boolean isPlaced() {
         return nonNull(position);
-    }
-
-    private void initResiduals() {
-
-        if (isMisterX()) {
-            initMisterXResiduals();
-        } else {
-            initDetectiveResiduals();
-        }
     }
 }

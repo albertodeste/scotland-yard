@@ -6,6 +6,9 @@ import it.ziotob.game.scotlandyard.model.MatchStatus;
 import it.ziotob.game.scotlandyard.model.Player;
 import it.ziotob.game.scotlandyard.model.Position;
 import it.ziotob.game.scotlandyard.model.map.Map;
+import it.ziotob.game.scotlandyard.model.residuals.DetectiveResidualMoves;
+import it.ziotob.game.scotlandyard.model.residuals.MisterXResidualMoves;
+import it.ziotob.game.scotlandyard.model.residuals.ResidualMoves;
 import it.ziotob.game.scotlandyard.repository.PlayerRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -101,7 +104,7 @@ public class PlayerService {
 
             boolean validMove = Map.validateMove(player.getPosition(), endPosition, moveType);
             boolean playerCanMoveInTurn = player.getResidualRoundMoves() > 0;
-            boolean validResiduals = true; //TODO validate moveType is valid on player's residuals
+            boolean validResiduals = getPlayerResidualMoves(player, matchStatus).canDoMove(moveType);
             boolean emptyCell = noDetectivesInCell(matchStatus.getPlayers(), endPosition);
 
             return validMove && playerCanMoveInTurn && validResiduals && emptyCell;
@@ -124,7 +127,7 @@ public class PlayerService {
 
             boolean validMove = Map.validateMove(player.getPosition(), endPosition, moveType);
             boolean playerCanMoveInTurn = player.getResidualRoundMoves() > 0;
-            boolean validResiduals = true; //TODO validate player residuals are valid for the wanted move
+            boolean validResiduals = getPlayerResidualMoves(player, matchStatus).canDoMove(moveType);
             boolean emptyCell = noDetectivesInCell(matchStatus.getPlayers(), endPosition);
 
             return validMove && playerCanMoveInTurn && validResiduals && emptyCell;
@@ -146,6 +149,15 @@ public class PlayerService {
             return true;
         } else {
             return false;
+        }
+    }
+
+    public ResidualMoves getPlayerResidualMoves(Player player, MatchStatus matchStatus) {
+
+        if (player.isDetective()) {
+            return new DetectiveResidualMoves(player);
+        } else {
+            return new MisterXResidualMoves(matchStatus);
         }
     }
 
