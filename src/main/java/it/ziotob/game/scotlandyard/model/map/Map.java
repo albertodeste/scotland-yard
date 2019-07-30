@@ -3,9 +3,6 @@ package it.ziotob.game.scotlandyard.model.map;
 import it.ziotob.game.scotlandyard.model.residuals.ResidualMoves;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static it.ziotob.game.scotlandyard.model.map.Graph.ConnectionType.*;
 import static java.util.Arrays.asList;
@@ -50,7 +47,7 @@ public class Map {
         result.connect(12, LOW, 23);
 
         result.connect(13, LOW, 23, 14, 24);
-        result.connect(13, MID, 23, 14);
+        result.connect(13, MID, 23, 14, 52);
         result.connect(13, HIGH, 46, 67, 89);
 
         result.connect(14, LOW, 15, 25);
@@ -101,7 +98,7 @@ public class Map {
         result.connect(34, LOW, 47, 48);
         result.connect(34, MID, 46, 63);
 
-        result.connect(35, LOW, 36, 48);
+        result.connect(35, LOW, 36, 48, 65);
 
         result.connect(36, LOW, 37, 49);
 
@@ -117,7 +114,7 @@ public class Map {
         result.connect(41, MID, 52, 87);
 
         result.connect(42, LOW, 56, 72);
-        result.connect(42, LOW, 72);
+        result.connect(42, MID, 72);
 
         result.connect(43, LOW, 57);
 
@@ -153,7 +150,7 @@ public class Map {
 
         result.connect(57, LOW, 58, 73);
 
-        result.connect(58, LOW, 59, 74);
+        result.connect(58, LOW, 59, 74, 75);
         result.connect(58, MID, 74, 77);
 
         result.connect(59, LOW, 75, 76);
@@ -165,11 +162,12 @@ public class Map {
         result.connect(62, LOW, 79);
 
         result.connect(63, LOW, 64, 79, 80);
-        result.connect(63, MID, 65, 78, 100);
+        result.connect(63, MID, 65, 79, 100);
 
         result.connect(64, LOW, 65, 81);
 
         result.connect(65, LOW, 66, 82);
+        result.connect(65, MID, 67, 82);
 
         result.connect(66, LOW, 67, 82);
 
@@ -190,7 +188,7 @@ public class Map {
 
         result.connect(73, LOW, 74, 92);
 
-        result.connect(74, LOW, 75, 92, 94);
+        result.connect(74, LOW, 75, 92);
         result.connect(74, MID, 94);
 
         result.connect(75, LOW, 94);
@@ -204,7 +202,7 @@ public class Map {
         result.connect(78, MID, 79);
 
         result.connect(79, LOW, 98);
-        result.connect(79, HIGH, 111);
+        result.connect(79, HIGH, 93, 111);
 
         result.connect(80, LOW, 99, 100);
 
@@ -270,7 +268,7 @@ public class Map {
         result.connect(107, LOW, 119);
         result.connect(107, MID, 161);
 
-        result.connect(108, LOW, 117, 119, 135);
+        result.connect(108, LOW, 117, 119);
         result.connect(108, MID, 116, 135);
         result.connect(108, MISTER_X, 115);
 
@@ -331,13 +329,13 @@ public class Map {
         result.connect(132, LOW, 140);
 
         result.connect(133, LOW, 134, 140, 141);
-        result.connect(133, MID, 140, 142, 157);
+        result.connect(133, MID, 140, 157);
 
         result.connect(134, LOW, 141, 142);
 
         result.connect(135, LOW, 136, 143, 161);
 
-        result.connect(136, LOW, 161, 162);
+        result.connect(136, LOW, 162);
 
         result.connect(137, LOW, 147);
 
@@ -347,7 +345,7 @@ public class Map {
 
         result.connect(140, LOW, 154, 156);
         result.connect(140, MID, 154, 156);
-        result.connect(140, HIGH, 153, 185);
+        result.connect(140, HIGH, 153);
 
         result.connect(141, LOW, 142, 158);
 
@@ -393,7 +391,7 @@ public class Map {
 
         result.connect(158, LOW, 159);
 
-        result.connect(159, LOW, 170, 172, 198);
+        result.connect(159, LOW, 170, 172, 186, 198);
 
         result.connect(160, LOW, 161, 173);
 
@@ -420,11 +418,11 @@ public class Map {
 
         result.connect(170, LOW, 185);
 
-        result.connect(171, LOW, 173, 175);
+        result.connect(171, LOW, 173, 175, 199);
 
         result.connect(172, LOW, 187);
 
-        result.connect(173, LOW, 174);
+        result.connect(173, LOW, 174, 188);
 
         result.connect(174, LOW, 175);
 
@@ -435,7 +433,7 @@ public class Map {
 
         result.connect(179, LOW, 191);
 
-        result.connect(180, LOW, 181, 192, 193);
+        result.connect(180, LOW, 181, 193);
         result.connect(180, MID, 190, 184);
 
         result.connect(181, LOW, 182, 193);
@@ -447,7 +445,7 @@ public class Map {
         result.connect(184, LOW, 185, 196, 197);
         result.connect(184, MID, 185);
 
-        result.connect(185, LOW, 186, 198);
+        result.connect(185, LOW, 186);
         result.connect(185, MID, 187);
 
         result.connect(186, LOW, 198);
@@ -483,12 +481,6 @@ public class Map {
     }
 
     public static List<Long> getReachablePositions(Long position, ResidualMoves residual) {
-
-        return Optional.ofNullable(graph.getConnections(position))
-                .map(map -> map.entrySet().stream())
-                .orElse(Stream.empty())
-                .filter(entry -> residual.canDoMove(entry.getValue().getValue()))
-                .map(java.util.Map.Entry::getKey)
-                .collect(Collectors.toList());
+        return graph.getReachablePositions(position, residual.getResidualNames());
     }
 }

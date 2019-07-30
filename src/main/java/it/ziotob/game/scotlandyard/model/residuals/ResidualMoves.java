@@ -3,8 +3,10 @@ package it.ziotob.game.scotlandyard.model.residuals;
 import it.ziotob.game.scotlandyard.model.map.Graph;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public abstract class ResidualMoves {
 
@@ -53,5 +55,13 @@ public abstract class ResidualMoves {
                 .findFirst()
                 .map(Map.Entry::getValue)
                 .orElse(0L);
+    }
+
+    public List<String> getResidualNames() {
+
+        return getResidual().entrySet().stream()
+                .filter(e -> e.getValue() > 0L)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
     }
 }
