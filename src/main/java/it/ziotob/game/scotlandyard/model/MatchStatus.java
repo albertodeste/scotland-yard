@@ -130,4 +130,8 @@ public class MatchStatus {
     public boolean canMoveDetective() {
         return isMovePlayers();
     }
+
+    public boolean isFirstRound() {
+        return players.stream().filter(Player::isMisterX).findFirst().map(Player::getCurrentRound).filter(round -> round == 1L).isPresent();
+    }
 }

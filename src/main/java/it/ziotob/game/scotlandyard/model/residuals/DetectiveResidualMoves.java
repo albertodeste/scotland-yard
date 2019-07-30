@@ -10,9 +10,9 @@ public class DetectiveResidualMoves extends ResidualMoves {
 
     private final Player detective;
 
-    private static final Long DEFAULT_LOW_MOVES = 13L;
-    private static final Long DEFAULT_MID_MOVES = 8L;
-    private static final Long DEFAULT_HIGH_MOVES = 3L;
+    public static final Long DEFAULT_LOW_MOVES = 13L;
+    public static final Long DEFAULT_MID_MOVES = 8L;
+    public static final Long DEFAULT_HIGH_MOVES = 3L;
 
     @Override
     protected void populateCache(Map<String, Long> cache) {

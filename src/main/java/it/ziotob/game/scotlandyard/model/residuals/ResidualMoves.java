@@ -35,8 +35,15 @@ public abstract class ResidualMoves {
                 .anyMatch(availableMove -> Objects.equals(availableMove, moveType));
     }
 
-    public String toJSONString() {
-        return "{}"; //TODO implement
+    public String toJSON() {
+
+        return String.format("{\"low\": %d, \"mid\": %d, \"high\": %d, \"mister_x\": %d, \"double\": %d}",
+                getMoveTypeResidual(MOVE_LOW),
+                getMoveTypeResidual(MOVE_MID),
+                getMoveTypeResidual(MOVE_HIGH),
+                getMoveTypeResidual(MOVE_MISTER_X),
+                getMoveTypeResidual(MOVE_DOUBLE)
+        );
     }
 
     public Long getMoveTypeResidual(String moveType) {
