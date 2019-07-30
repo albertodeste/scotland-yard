@@ -69,8 +69,19 @@ public class PlayerHandler extends HttpServlet {
             placePlayer(player.get(), requestBody, response);
         } else if ("move".equals(action)) {
             movePlayer(player.get(), requestBody, response);
+        } else if ("double".equals(action)) {
+            doubleMovePlayer(player.get(), response);
         } else {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+        }
+    }
+
+    private void doubleMovePlayer(Player player, HttpServletResponse response) {
+
+        if (PlayerService.getInstance().doubleMovePlayer(player)) {
+            response.setStatus(HttpServletResponse.SC_OK);
+        } else {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 

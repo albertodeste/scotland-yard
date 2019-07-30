@@ -199,4 +199,20 @@ public class PlayerService {
         final LocalDateTime dateTime = LocalDateTime.now();
         players.forEach(player -> playerRepository.nextRound(player, dateTime));
     }
+
+    public boolean doubleMovePlayer(Player player) {
+
+        MatchStatus matchStatus = MatchStatusService.getInstance().getMatchStatus(player);
+
+        boolean isMisterX = player.isMisterX();
+        boolean hasResiduals =  getPlayerResidualMoves(player, matchStatus).canDoMove(ResidualMoves.MOVE_DOUBLE);
+
+        if (isMisterX && hasResiduals) {
+
+            playerRepository.doubleMovePlayer(player, LocalDateTime.now());
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

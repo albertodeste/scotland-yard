@@ -69,4 +69,8 @@ public class PlayerRepository {
             throw new RuntimeException("Move type " + moveType + " not mappable for persistency");
         }
     }
+
+    public void doubleMovePlayer(Player player, LocalDateTime dateTime) {
+        database.putEvent(new Event(player.getId(), EVENT_MOVE_DOUBLE, null, dateTime), Player.GROUP);
+    }
 }
