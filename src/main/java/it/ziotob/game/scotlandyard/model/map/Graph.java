@@ -14,12 +14,11 @@ public class Graph {
         connections = new HashMap<>();
     }
 
-    public void connect(Long source, ConnectionType type, Long... destinations) {
-
-        Arrays.stream(destinations).forEach(destination -> connect(source, destination, type));
+    public void connect(Integer source, ConnectionType type, Integer... destinations) {
+        Arrays.stream(destinations).forEach(destination -> connect(source.longValue(), type, destination.longValue()));
     }
 
-    public void connect(Long source, Long destination, ConnectionType type) {
+    private void connect(Long source, ConnectionType type, Long destination) {
 
         addConnection(source, destination, type);
         addConnection(destination, source, type);

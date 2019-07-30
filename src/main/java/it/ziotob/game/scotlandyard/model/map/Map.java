@@ -13,7 +13,7 @@ import static java.util.Arrays.asList;
 public class Map {
 
     public static final List<Long> POSITIONS_PLAYERS = asList(197L, 112L, 53L, 132L, 91L, 198L, 94L, 155L, 174L, 103L, 34L, 13L, 26L, 29L, 138L, 141L, 50L, 117L);
-    public static final List<Long> POSITIONS_MISTER_X = asList(10L, 12L, 100L, 120L); //TODO load form real cards
+    public static final List<Long> POSITIONS_MISTER_X = asList(10L, 12L, 100L, 120L); //TODO load from real cards
 
     private static final Graph graph = buildGraph();
 
@@ -21,123 +21,241 @@ public class Map {
 
         Graph result = new Graph();
 
-        result.connect(1L, LOW, 8L, 9L);
-        result.connect(1L, MID, 46L, 58L);
-        result.connect(1L, 46L, HIGH);
+        result.connect(1, LOW, 8, 9);
+        result.connect(1, MID, 46, 58);
+        result.connect(1, HIGH, 46);
 
-        result.connect(2L, LOW, 10L, 20L);
+        result.connect(2, LOW, 10, 20);
 
-        result.connect(3L, LOW, 4L, 11L, 12L);
-        result.connect(3L, MID, 22L, 23L);
+        result.connect(3, LOW, 4, 11, 12);
+        result.connect(3, MID, 22, 23);
 
-        result.connect(4L, 13L, LOW);
+        result.connect(4, LOW, 13);
 
-        result.connect(5L, LOW, 15L, 16L);
+        result.connect(5, LOW, 15, 16);
 
-        result.connect(6L, LOW, 7L, 29L);
+        result.connect(6, LOW, 7, 29);
 
-        result.connect(7L, 17L, LOW);
-        result.connect(7L, 42L, MID);
+        result.connect(7, LOW, 17);
+        result.connect(7, MID, 42);
 
-        result.connect(8L, LOW, 18L, 19L);
+        result.connect(8, LOW, 18, 19);
 
-        result.connect(9L, LOW, 19L, 20L);
+        result.connect(9, LOW, 19, 20);
 
-        result.connect(10L, LOW, 21L, 34L, 11L);
+        result.connect(10, LOW, 21, 34, 11);
 
-        result.connect(11L, 22L, LOW);
+        result.connect(11, LOW, 22);
 
-        result.connect(12L, 23L, LOW);
+        result.connect(12, LOW, 23);
 
-        result.connect(13L, LOW, 23L, 14L, 24L);
-        result.connect(13L, MID, 23L, 14L);
-        result.connect(13L, HIGH, 46L, 67L, 89L);
+        result.connect(13, LOW, 23, 14, 24);
+        result.connect(13, MID, 23, 14);
+        result.connect(13, HIGH, 46, 67, 89);
 
-        result.connect(14L, LOW, 15L, 25L);
-        result.connect(14L, MID, 15L);
+        result.connect(14, LOW, 15, 25);
+        result.connect(14, MID, 15);
 
-        result.connect(15L, LOW, 16L, 26L, 28L);
-        result.connect(15L, MID, 41L, 29L);
+        result.connect(15, LOW, 16, 26, 28);
+        result.connect(15, MID, 41, 29);
 
-        result.connect(16L, LOW, 28L, 29L);
+        result.connect(16, LOW, 28, 29);
 
-        result.connect(17L, LOW, 29L, 30L);
+        result.connect(17, LOW, 29, 30);
 
-        result.connect(18L, LOW, 43L, 31L);
+        result.connect(18, LOW, 43, 31);
 
-        result.connect(19L, 32L, LOW);
+        result.connect(19, LOW, 32);
 
-        result.connect(20L, 33L, LOW);
+        result.connect(20, LOW, 33);
 
-        result.connect(21L, 33L, LOW);
+        result.connect(21, LOW, 33);
 
-        result.connect(22L, LOW, 34L, 23L, 35L);
-        result.connect(22L, MID, 34L, 23L, 65L);
+        result.connect(22, LOW, 34, 23, 35);
+        result.connect(22, MID, 34, 23, 65);
 
-        result.connect(23L, 37L, LOW);
-        result.connect(23L, 67L, MID);
+        result.connect(23, LOW, 37);
+        result.connect(23, MID, 67);
 
-        result.connect(24L, LOW, 37L, 38L);
+        result.connect(24, LOW, 37, 38);
 
-        result.connect(25L, LOW, 38L, 39L);
+        result.connect(25, LOW, 38, 39);
 
-        result.connect(26L, LOW, 27L, 39L);
+        result.connect(26, LOW, 27, 39);
 
-        result.connect(27L, LOW, 28L, 40L);
+        result.connect(27, LOW, 28, 40);
 
-        result.connect(28L, 41L, LOW);
+        result.connect(28, LOW, 41);
 
-        result.connect(29L, LOW, 41L, 42L);
-        result.connect(29L, MID, 41L, 42L, 55L);
+        result.connect(29, LOW, 41, 42);
+        result.connect(29, MID, 41, 42, 55);
 
-        result.connect(30L, 42L, LOW);
+        result.connect(30, LOW, 42);
 
-        result.connect(31L, LOW, 43L, 44L);
+        result.connect(31, LOW, 43, 44);
 
-        result.connect(32L, LOW, 33L, 44L, 45L);
+        result.connect(32, LOW, 33, 44, 45);
 
-        result.connect(33L, 46L, LOW);
+        result.connect(33, LOW, 46);
 
-        result.connect(34L, LOW, 47L, 48L);
-        result.connect(34L, MID, 46L, 63L);
+        result.connect(34, LOW, 47, 48);
+        result.connect(34, MID, 46, 63);
 
-        result.connect(35L, LOW, 36L, 48L);
+        result.connect(35, LOW, 36, 48);
 
-        result.connect(36L, LOW, 37L, 49L);
+        result.connect(36, LOW, 37, 49);
 
-        result.connect(37L, 50L, LOW);
+        result.connect(37, LOW, 50);
 
-        result.connect(38L, LOW, 50L, 51L);
+        result.connect(38, LOW, 50, 51);
 
-        result.connect(39L, LOW, 51L, 52L);
+        result.connect(39, LOW, 51, 52);
 
-        result.connect(40L, LOW, 41L, 52L, 53L);
+        result.connect(40, LOW, 41, 52, 53);
 
-        result.connect(41L, 54L, LOW);
-        result.connect(41L, MID, 52L, 87L);
+        result.connect(41, LOW, 54);
+        result.connect(41, MID, 52, 87);
 
-        result.connect(42L, LOW, 56L, 72L);
-        result.connect(42L, 72L, LOW);
+        result.connect(42, LOW, 56, 72);
+        result.connect(42, LOW, 72);
 
-        result.connect(43L, 57L, LOW);
+        result.connect(43, LOW, 57);
 
-        result.connect(44L, 58L, LOW);
+        result.connect(44, LOW, 58);
 
-        result.connect(45L, LOW, 58L, 59L, 60L, 46L);
+        result.connect(45, LOW, 58, 59, 60, 46);
 
-        result.connect(46L, LOW, 47L, 61L);
-        result.connect(46L, MID, 58L, 78L);
-        result.connect(46L, HIGH, 74L, 79L);
+        result.connect(46, LOW, 47, 61);
+        result.connect(46, MID, 58, 78);
+        result.connect(46, HIGH, 74, 79);
 
-        result.connect(47L, 62L, LOW);
+        result.connect(47, LOW, 62);
 
-        result.connect(48L, LOW, 62L, 63L);
+        result.connect(48, LOW, 62, 63);
 
-        result.connect(49L, LOW, 50L, 66L);
+        result.connect(49, LOW, 50, 66);
 
-        result.connect(50L, 67L, LOW);
+        result.connect(50, LOW, 67);
 
-        //TODO add next connections
+        result.connect(51, LOW, 52, 67, 68);
+
+        result.connect(52, LOW, 69);
+        result.connect(52, MID, 67, 86);
+
+        result.connect(53, LOW, 69, 54);
+
+        result.connect(54, LOW, 55, 70);
+
+        result.connect(55, LOW, 71);
+        result.connect(55, MID, 89);
+
+        result.connect(56, LOW, 91);
+
+        result.connect(57, LOW, 58, 73);
+
+        result.connect(58, LOW, 59, 74);
+        result.connect(58, MID, 74, 77);
+
+        result.connect(59, LOW, 75, 76);
+
+        result.connect(60, LOW, 61, 76);
+
+        result.connect(61, LOW, 62, 78, 76);
+
+        result.connect(62, LOW, 79);
+
+        result.connect(63, LOW, 64, 79, 80);
+        result.connect(63, MID, 65, 78, 100);
+
+        result.connect(64, LOW, 65, 81);
+
+        result.connect(65, LOW, 66, 82);
+
+        result.connect(66, LOW, 67, 82);
+
+        result.connect(67, LOW, 68, 84);
+        result.connect(67, MID, 82, 102);
+        result.connect(67, HIGH, 79, 89, 111);
+
+        result.connect(68, LOW, 69, 85);
+
+        result.connect(69, LOW, 86);
+
+        result.connect(70, LOW, 71, 87);
+
+        result.connect(71, LOW, 72, 89);
+
+        result.connect(72, LOW, 90, 91);
+        result.connect(72, MID, 105, 107);
+
+        result.connect(73, LOW, 74, 92);
+
+        result.connect(74, LOW, 75, 92, 94);
+        result.connect(74, MID, 94);
+
+        result.connect(75, LOW, 94);
+
+        result.connect(76, LOW, 77);
+
+        result.connect(77, LOW, 78, 95, 96);
+        result.connect(77, MID, 78, 94, 124);
+
+        result.connect(78, LOW, 79, 97);
+        result.connect(78, MID, 79);
+
+        result.connect(79, LOW, 98);
+        result.connect(79, HIGH, 111);
+
+        result.connect(80, LOW, 99, 100);
+
+        result.connect(81, LOW, 82, 100);
+
+        result.connect(82, LOW, 101);
+        result.connect(82, MID, 100, 140);
+
+        result.connect(83, LOW, 101, 102);
+
+        result.connect(84, LOW, 85);
+
+        result.connect(85, LOW, 103);
+
+        result.connect(86, LOW, 103, 104);
+        result.connect(86, MID, 87, 102, 116);
+
+        result.connect(87, LOW, 88);
+        result.connect(87, MID, 105);
+
+        result.connect(88, LOW, 89, 117);
+
+        result.connect(89, LOW, 105);
+        result.connect(89, MID, 105);
+        result.connect(89, HIGH, 140, 128);
+
+        result.connect(90, LOW, 91, 105);
+
+        result.connect(91, LOW, 105, 107);
+
+        result.connect(92, LOW, 93);
+
+        result.connect(93, LOW, 94);
+        result.connect(93, MID, 94);
+
+        result.connect(94, LOW, 95);
+
+        result.connect(95, LOW, 122);
+
+        result.connect(96, LOW, 97, 109);
+
+        result.connect(97, LOW, 98, 109);
+
+        result.connect(98, LOW, 99, 110);
+
+        result.connect(99, LOW, 110, 112);
+
+        result.connect(100, LOW, 101, 112, 113);
+        result.connect(100, MID, 111);
+
+        //TODO map remaining map nodes
 
         return result;
     }
