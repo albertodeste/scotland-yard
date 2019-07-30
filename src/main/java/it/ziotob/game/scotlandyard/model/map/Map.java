@@ -255,7 +255,225 @@ public class Map {
         result.connect(100, LOW, 101, 112, 113);
         result.connect(100, MID, 111);
 
-        //TODO map remaining map nodes
+        result.connect(101, LOW, 114);
+
+        result.connect(102, LOW, 103, 115);
+        result.connect(102, MID, 127);
+
+        result.connect(104, LOW, 116);
+
+        result.connect(105, LOW, 106, 108);
+        result.connect(105, MID, 107, 108);
+
+        result.connect(106, LOW, 107);
+
+        result.connect(107, LOW, 119);
+        result.connect(107, MID, 161);
+
+        result.connect(108, LOW, 117, 119, 135);
+        result.connect(108, MID, 116, 135);
+        result.connect(108, MISTER_X, 115);
+
+        result.connect(109, LOW, 110, 124);
+
+        result.connect(110, LOW, 111);
+
+        result.connect(111, LOW, 112, 124);
+        result.connect(111, MID, 124);
+        result.connect(111, HIGH, 153, 163);
+
+        result.connect(112, LOW, 125);
+
+        result.connect(113, LOW, 114, 125);
+
+        result.connect(114, LOW, 115, 126, 131, 132);
+
+        result.connect(115, LOW, 126, 127);
+        result.connect(115, MISTER_X, 157);
+
+        result.connect(116, LOW, 117, 118, 127);
+        result.connect(116, MID, 127, 142);
+
+        result.connect(117, LOW, 129);
+
+        result.connect(118, LOW, 129, 134, 142);
+
+        result.connect(119, LOW, 136);
+
+        result.connect(120, LOW, 121, 144);
+
+        result.connect(121, LOW, 122, 145);
+
+        result.connect(122, LOW, 123, 146);
+        result.connect(122, MID, 123, 144);
+
+        result.connect(123, LOW, 124, 137, 148, 149);
+        result.connect(123, MID, 124, 144, 165);
+
+        result.connect(124, LOW, 130, 138);
+        result.connect(124, MID, 153);
+
+        result.connect(125, LOW, 131);
+
+        result.connect(126, LOW, 127, 140);
+
+        result.connect(127, LOW, 133, 134);
+        result.connect(127, MID, 133);
+
+        result.connect(128, LOW, 142, 143, 160, 188, 172);
+        result.connect(128, MID, 135, 142, 161, 187, 199);
+        result.connect(128, HIGH, 140, 185);
+
+        result.connect(129, LOW, 135, 142, 143);
+
+        result.connect(130, LOW, 131, 139);
+
+        result.connect(132, LOW, 140);
+
+        result.connect(133, LOW, 134, 140, 141);
+        result.connect(133, MID, 140, 142, 157);
+
+        result.connect(134, LOW, 141, 142);
+
+        result.connect(135, LOW, 136, 143, 161);
+
+        result.connect(136, LOW, 161, 162);
+
+        result.connect(137, LOW, 147);
+
+        result.connect(138, LOW, 150, 152);
+
+        result.connect(139, LOW, 153, 154);
+
+        result.connect(140, LOW, 154, 156);
+        result.connect(140, MID, 154, 156);
+        result.connect(140, HIGH, 153, 185);
+
+        result.connect(141, LOW, 142, 158);
+
+        result.connect(142, LOW, 143, 158);
+        result.connect(142, MID, 157);
+
+        result.connect(143, LOW, 160);
+
+        result.connect(144, LOW, 145, 177);
+        result.connect(144, MID, 163);
+
+        result.connect(145, LOW, 146);
+
+        result.connect(146, LOW, 147, 163);
+
+        result.connect(147, LOW, 164);
+
+        result.connect(148, LOW, 149, 164);
+
+        result.connect(149, LOW, 150, 165);
+
+        result.connect(150, LOW, 151);
+
+        result.connect(151, LOW, 152, 165, 166);
+
+        result.connect(152, LOW, 153);
+
+        result.connect(153, LOW, 154, 166, 167);
+        result.connect(153, MID, 154, 180, 184);
+        result.connect(153, HIGH, 163, 185);
+
+        result.connect(154, LOW, 155);
+        result.connect(154, MID, 156);
+
+        result.connect(155, LOW, 156, 167, 168);
+
+        result.connect(156, LOW, 157, 169);
+        result.connect(156, MID, 157, 184);
+
+        result.connect(157, LOW, 158, 170);
+        result.connect(157, MID, 185);
+        result.connect(157, MISTER_X, 194);
+
+        result.connect(158, LOW, 159);
+
+        result.connect(159, LOW, 170, 172, 198);
+
+        result.connect(160, LOW, 161, 173);
+
+        result.connect(161, LOW, 174);
+        result.connect(161, MID, 199);
+
+        result.connect(162, LOW, 175);
+
+        result.connect(163, LOW, 177);
+        result.connect(163, MID, 176, 191);
+
+        result.connect(164, LOW, 178, 179);
+
+        result.connect(165, LOW, 179, 180);
+        result.connect(165, MID, 180, 191);
+
+        result.connect(166, LOW, 181, 183);
+
+        result.connect(167, LOW, 168, 183);
+
+        result.connect(168, LOW, 184);
+
+        result.connect(169, LOW, 184);
+
+        result.connect(170, LOW, 185);
+
+        result.connect(171, LOW, 173, 175);
+
+        result.connect(172, LOW, 187);
+
+        result.connect(173, LOW, 174);
+
+        result.connect(174, LOW, 175);
+
+        result.connect(176, LOW, 177, 189);
+        result.connect(176, MID, 190);
+
+        result.connect(178, LOW, 189, 191);
+
+        result.connect(179, LOW, 191);
+
+        result.connect(180, LOW, 181, 192, 193);
+        result.connect(180, MID, 190, 184);
+
+        result.connect(181, LOW, 182, 193);
+
+        result.connect(182, LOW, 183, 195);
+
+        result.connect(183, LOW, 196);
+
+        result.connect(184, LOW, 185, 196, 197);
+        result.connect(184, MID, 185);
+
+        result.connect(185, LOW, 186, 198);
+        result.connect(185, MID, 187);
+
+        result.connect(186, LOW, 198);
+
+        result.connect(187, LOW, 188, 198);
+
+        result.connect(188, LOW, 199);
+
+        result.connect(189, LOW, 190);
+
+        result.connect(190, LOW, 191, 192);
+        result.connect(190, MID, 191);
+
+        result.connect(191, LOW, 192);
+
+        result.connect(192, LOW, 194);
+
+        result.connect(193, LOW, 194);
+
+        result.connect(194, LOW, 195);
+
+        result.connect(195, LOW, 197);
+
+        result.connect(196, LOW, 197);
+
+        result.connect(198, LOW, 199);
 
         return result;
     }
