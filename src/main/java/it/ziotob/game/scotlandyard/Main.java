@@ -5,6 +5,7 @@ import it.ziotob.game.scotlandyard.database.Event;
 import it.ziotob.game.scotlandyard.handler.MatchHandler;
 import it.ziotob.game.scotlandyard.handler.PlayerHandler;
 import it.ziotob.game.scotlandyard.handler.StatusHandler;
+import it.ziotob.game.scotlandyard.handler.WebappHandler;
 import it.ziotob.game.scotlandyard.model.Match;
 import it.ziotob.game.scotlandyard.model.Player;
 import it.ziotob.game.scotlandyard.model.Position;
@@ -36,6 +37,7 @@ public class Main {
         handler.addServletWithMapping(StatusHandler.class, "/status");
         handler.addServletWithMapping(MatchHandler.class, "/match/*");
         handler.addServletWithMapping(PlayerHandler.class, "/player/*");
+        handler.addServletWithMapping(WebappHandler.class, "/webapp/*");
 
         server.setHandler(handler);
 
