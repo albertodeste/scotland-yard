@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static it.ziotob.game.scotlandyard.utils.ServletUtils.getPathVariables;
 
@@ -33,11 +34,26 @@ public class WebappHandler extends HttpServlet {
 
             String responseStr = reader.lines().collect(Collectors.joining("\n"));
 
-            response.setContentType("text/html");
+            response.setContentType(detectContentType(resourcePath));
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().println(responseStr);
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private String detectContentType(String resourcePath) {
+
+        String extension = Stream.of(resourcePath.split(".")).reduce((a, b) -> b).orElse("html");
+
+        if ("html".equals(extension)) {
+            return "text/html";
+        } else if ("js".equals(extension)) {
+            return "text/javascript";
+        } else if ("css".equals(extension)) {
+            return "text/css";
+        } else {
+            return "text/plain";
         }
     }
 }
