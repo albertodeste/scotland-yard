@@ -1,14 +1,11 @@
 package it.ziotob.game.scotlandyard.handler;
 
+import it.ziotob.game.scotlandyard.service.WebappCacheService;
+
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.stream.Collectors;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import static it.ziotob.game.scotlandyard.utils.ServletUtils.getPathVariables;
@@ -17,7 +14,7 @@ public class WebappHandler extends HttpServlet {
 
     private static final String BASE_PATH = "webapp";
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
 
         String resourcePath = String.join("/", getPathVariables(request, BASE_PATH));
 
@@ -25,20 +22,22 @@ public class WebappHandler extends HttpServlet {
             resourcePath = "index.html";
         }
 
-        extractResource(resourcePath, response);
-    }
+        Optional<String> resource = WebappCacheService.getInstance().getResource(resourcePath);
 
-    private void extractResource(String resourcePath, HttpServletResponse response) {
+        if (resource.isPresent()) {
 
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("webapp/" + resourcePath)))) {
+                try {
 
-            String responseStr = reader.lines().collect(Collectors.joining("\n"));
+                response.setContentType(detectContentType(resourcePath));
+                response.setStatus(HttpServletResponse.SC_OK);
+                response.getWriter().println(resource.get());
+            } catch (Exception ignored) {
 
-            response.setContentType(detectContentType(resourcePath));
-            response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().println(responseStr);
-        } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.setContentType("application/json");
+            }
+        } else {
+            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
         }
     }
 
