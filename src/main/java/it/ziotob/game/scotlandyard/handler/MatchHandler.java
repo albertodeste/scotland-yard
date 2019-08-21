@@ -78,7 +78,7 @@ public class MatchHandler extends HttpServlet {
         response.getWriter().println(match.toJSON());
     }
 
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) {
 
         List<String> pathVariables = getPathVariables(request, BASE_URL);
         String matchId = pathVariables.stream().findFirst().orElseThrow(() -> new RuntimeException("Match PUT called without matchId"));
