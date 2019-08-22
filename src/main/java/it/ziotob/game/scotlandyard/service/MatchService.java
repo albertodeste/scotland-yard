@@ -36,8 +36,26 @@ public class MatchService {
         return instance;
     }
 
-    public String createMatch() {
-        return matchRepository.createMatch(LocalDateTime.now());
+    public Match createMatch() {
+
+        String matchId = matchRepository.createMatch(LocalDateTime.now(), generateMatchJoinString());
+        return getMatch(matchId).orElseThrow(() -> new RuntimeException("Cannot retrieve created match with id " + matchId));
+    }
+
+    private String generateMatchJoinString() {
+        return generateRandomString(4) + "-" + generateRandomString(4);
+    }
+
+    private String generateRandomString(int length) {
+
+        String possibilities = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        Random random = new Random();
+
+        return Stream.generate(() -> random.nextInt(possibilities.length()))
+                .limit(length)
+                .map(possibilities::charAt)
+                .map(Object::toString)
+                .collect(Collectors.joining());
     }
 
     public Optional<Match> getMatch(String matchId) {

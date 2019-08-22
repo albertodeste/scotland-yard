@@ -1,9 +1,6 @@
 package it.ziotob.game.scotlandyard;
 
-import it.ziotob.game.scotlandyard.handler.MatchHandler;
-import it.ziotob.game.scotlandyard.handler.PlayerHandler;
-import it.ziotob.game.scotlandyard.handler.StatusHandler;
-import it.ziotob.game.scotlandyard.handler.WebappHandler;
+import it.ziotob.game.scotlandyard.handler.*;
 import it.ziotob.game.scotlandyard.service.WebappCacheService;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
@@ -33,6 +30,7 @@ public class Main {
         handler.addServletWithMapping(MatchHandler.class, "/match/*");
         handler.addServletWithMapping(PlayerHandler.class, "/player/*");
         handler.addServletWithMapping(WebappHandler.class, "/webapp/*");
+        handler.addServletWithMapping(SubscriptionHandler.class, "/" + SubscriptionHandler.BASE_URL);
 
         server.setHandler(handler);
 
@@ -42,8 +40,6 @@ public class Main {
             System.out.println("ERROR while starting server");
             e.printStackTrace();
         }
-
-        //TODO start match expiration cleaner thread
 
         String resourcesDirectory = Optional.ofNullable(Main.class.getClassLoader().getResource("."))
                 .map(URL::getFile)

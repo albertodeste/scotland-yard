@@ -18,11 +18,12 @@ public class MatchRepository {
 
     private final Database database;
 
-    public String createMatch(LocalDateTime dateTime) {
+    public String createMatch(LocalDateTime dateTime, String joinString) {
 
         String uid = UUID.randomUUID().toString();
 
         database.putEvent(new Event(uid, Match.EVENT_CREATE, null, dateTime), Match.GROUP);
+        database.putEvent(new Event(uid, Match.EVENT_JOIN_STRING, joinString, dateTime), Match.GROUP);
 
         return uid;
     }

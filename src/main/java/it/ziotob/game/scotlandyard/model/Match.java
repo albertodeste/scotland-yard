@@ -21,6 +21,7 @@ public class Match {
 
     public static final String GROUP = "match";
     public static final String EVENT_CREATE = "create";
+    public static final String EVENT_JOIN_STRING = "join_string";
     public static final String EVENT_ADDED_PLAYER = "added_player";
     public static final String EVENT_START = "start";
     public static final String EVENT_POSITION_GENERATE = "position_generate";
@@ -31,6 +32,7 @@ public class Match {
 
     private String id;
     private LocalDateTime startedTime;
+    private String joinString;
     private Boolean started = false;
     private List<String> relatedPlayerIds = new LinkedList<>();
     private List<Position> positions = new LinkedList<>();
@@ -47,10 +49,12 @@ public class Match {
 
     public String toJSON() {
 
-        return String.format("{\"started_time\":\"%s\", \"related_players\":[%s], \"is_started\": %s}",
+        return String.format("{\"id\": \"%s\", \"started_time\":\"%s\", \"related_players\":[%s], \"is_started\": %s, \"join_string\": \"%s\"}",
+                id,
                 DATE_TIME_JSON_FORMATTER.format(startedTime),
                 listToString(relatedPlayerIds, id -> "\"" + id + "\""),
-                started.toString());
+                started.toString(),
+                joinString);
     }
 
     private <E> String listToString(List<E> list, Function<E, String> fn) {
@@ -63,6 +67,8 @@ public class Match {
 
             id = event.getId();
             startedTime = event.getDateTime();
+        } else if (EVENT_JOIN_STRING.equals(event.getType())) {
+            joinString = event.getValue();
         } else if (EVENT_ADDED_PLAYER.equals(event.getType())) {
             relatedPlayerIds.add(event.getValue());
         } else if (EVENT_START.equals(event.getType())) {

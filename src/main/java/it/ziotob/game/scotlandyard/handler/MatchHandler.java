@@ -23,11 +23,11 @@ public class MatchHandler extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String matchId = MatchService.getInstance().createMatch();
+        Match match = MatchService.getInstance().createMatch();
 
         response.setContentType("application/json");
         response.setStatus(HttpServletResponse.SC_OK);
-        response.getWriter().println(String.format("{ \"id\": \"%s\" }", matchId));
+        response.getWriter().println(match.toJSON());
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
