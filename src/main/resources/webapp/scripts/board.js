@@ -7,6 +7,7 @@ function loadWaitingPage() {
 
     initMatch()
     .then(showJoinString)
+    .then(subscribeOnNewPlayers)
     .then(awaitPlayers)
     .catch(showError);
 }
@@ -22,15 +23,33 @@ function playerJoined(joinEvent) {
   //TODO display start button if match can start
 }
 
+function subscribeOnNewPlayers() {
+
+    return new Promise((res, rej) => {
+
+        $.ajax({
+          'url': '../subscriptions/' + window.matchId,
+          'method': 'POST',
+          'data': JSON.stringify({'actions': ['player_added']})
+        })
+        .done((data) => {
+           res();
+        })
+        .fail((err) => {
+          rej(err);
+        });
+    });
+}
+
 function awaitPlayers() {
 
     $.ajax({
-        'url': '../subscribe',
-        'method': 'POST',
-        'data': JSON.stringify({'subscriber-type': 'board', 'id': window.matchId, 'event-listening': ['player_added']})
+        'url': '../subscriptions/' + window.matchId,
+        'method': 'GET'
       })
       .done((data) => {
 
+        //TODO process only player added event
         playerJoined(data);
         awaitPlayers();
       })

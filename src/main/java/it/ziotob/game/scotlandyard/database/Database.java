@@ -1,7 +1,5 @@
 package it.ziotob.game.scotlandyard.database;
 
-import it.ziotob.game.scotlandyard.model.Player;
-
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -12,8 +10,6 @@ public class Database {
     private final Map<String, List<Event>> events;
 
     private static Database instance;
-
-    public static final List<String> monitoredEvents = Collections.singletonList(Player.EVENT_SET_MATCH_ID);
 
     private Database() {
         events = new HashMap<>();
@@ -38,9 +34,5 @@ public class Database {
             events.put(group, new LinkedList<>());
         }
         events.get(group).add(event);
-
-        if(monitoredEvents.contains(event.getType())) {
-            //TODO start subscribers notification thread giving following event
-        }
     }
 }
