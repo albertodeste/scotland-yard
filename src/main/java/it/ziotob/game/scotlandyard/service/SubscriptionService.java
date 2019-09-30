@@ -1,8 +1,11 @@
 package it.ziotob.game.scotlandyard.service;
 
+import it.ziotob.game.scotlandyard.database.Database;
+import it.ziotob.game.scotlandyard.repository.SubscriptionRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 import static java.util.Objects.isNull;
@@ -10,12 +13,14 @@ import static java.util.Objects.isNull;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class SubscriptionService {
 
+    private final SubscriptionRepository subscriptionRepository;
+
     private static SubscriptionService instance;
 
     public static SubscriptionService getInstance() {
 
         if (isNull(instance)) {
-            instance = new SubscriptionService();
+            instance = new SubscriptionService(new SubscriptionRepository(Database.getInstance()));
         }
 
         return instance;
@@ -31,15 +36,20 @@ public class SubscriptionService {
 
     public void upsertSubscription(String subscriberId, Collection<String> actions) {
 
-        //TODO create new subscription
-        //TODO if already present add specified actions
+        LocalDateTime dateTime = LocalDateTime.now();
+
+        if (!subscriptionRepository.getSubscription(subscriberId).isPresent()) {
+            subscriptionRepository.createSubscription(dateTime, subscriberId);
+        }
+
+        actions.forEach(action -> subscriptionRepository.subscribeEvent(dateTime.plusSeconds(1L), subscriberId, action));
     }
 
     public void deleteSubscription(String subscriberId) {
-        //TODO completely delete subscriber
+        subscriptionRepository.deleteSubscription(LocalDateTime.now(), subscriberId);
     }
 
     public void deleteActions(String subscriberId, Collection<String> actions) {
-        //TODO remove subscribed actions from specified subscriber
+        actions.forEach(action -> subscriptionRepository.deleteSubscribedEvent(LocalDateTime.now(), subscriberId, action));
     }
 }
