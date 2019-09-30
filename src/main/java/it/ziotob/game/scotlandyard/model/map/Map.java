@@ -9,8 +9,8 @@ import static java.util.Arrays.asList;
 
 public class Map {
 
-    public static final List<Long> POSITIONS_PLAYERS = asList(197L, 112L, 53L, 132L, 91L, 198L, 94L, 155L, 174L, 103L, 34L, 13L, 26L, 29L, 138L, 141L, 50L, 117L);
-    public static final List<Long> POSITIONS_MISTER_X = asList(10L, 12L, 100L, 120L); //TODO load from real cards
+    public static final List<Long> POSITIONS_PLAYERS = asList(197L, 112L, 53L, 123L, 91L, 198L, 94L, 155L, 174L, 103L, 34L, 13L, 26L, 29L, 138L, 141L, 50L, 117L);
+    public static final List<Long> POSITIONS_MISTER_X = asList(104L, 170L, 106L, 166L, 146L, 35L, 51L, 132L, 45L, 127L, 78L, 172L, 71L);
 
     private static final Graph graph = buildGraph();
 
